@@ -4,12 +4,10 @@
  * and open the template in the editor.
  */
 package mainPackage;
-import java.awt.Color;
 import java.awt.Font;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import static mainPackage.IngresarAlSistema.conexion;
@@ -351,8 +349,17 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                         
                         if((jTextField1.getText()).equals(testUsers[0]))
                         {
+                            JOptionPane.showMessageDialog(null, "Usuario encontrado","",JOptionPane.PLAIN_MESSAGE);
                             jTextField2.setText(testUsers[1]);
                             jTextField3.setText(testUsers[2]);
+                            if(testUsers[3].equals("Administrador"))
+                            {
+                                jComboBox1.setSelectedIndex(1);
+                            }
+                            else
+                            {
+                                 jComboBox1.setSelectedIndex(0);
+                            }
                             break;
                         }
 
