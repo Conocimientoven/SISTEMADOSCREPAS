@@ -305,7 +305,7 @@ public static boolean establecido;
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
         // TODO add your handling code here:
        
-      
+
         try
         {
             
