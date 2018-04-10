@@ -49,6 +49,11 @@ public class InterfazAdministrador extends javax.swing.JFrame {
         jButton2.setText("Administrar proveedores");
 
         jButton3.setText("Administrar BD");
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3MouseClicked(evt);
+            }
+        });
 
         jButton4.setText("Volver");
         jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -125,6 +130,12 @@ public class InterfazAdministrador extends javax.swing.JFrame {
         IngresarAlSistema.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton4MouseClicked
+
+    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+        AdministrarBD AdministrarBD  = new AdministrarBD();
+        AdministrarBD.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton3MouseClicked
 
     /**
      * @param args the command line arguments

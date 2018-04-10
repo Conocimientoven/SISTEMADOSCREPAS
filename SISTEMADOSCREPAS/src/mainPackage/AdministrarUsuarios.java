@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package mainPackage;
+import java.awt.Color;
 import java.awt.Font;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +20,9 @@ import static mainPackage.IngresarAlSistema.conexion;
  */
 public class AdministrarUsuarios extends javax.swing.JFrame {
     
+    Font deletingUser = new Font("Arial",Font.BOLD,12);
+    
+    //static boolean flag=false;
     static ButtonGroup group = new ButtonGroup();
     static PreparedStatement pre;
     static ResultSet res, spaceUsed;
@@ -31,9 +35,18 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
                     
-        TextPrompt tp7 = new TextPrompt("ID del usuario", jTextField1);
+        TextPrompt tp7 = new TextPrompt("Ejemplo: adminAurea333", jTextField1);
+        TextPrompt tp8 = new TextPrompt("Ejemplo: Leonardo David Madrigal Arellano", jTextField2);
+        TextPrompt tp9 = new TextPrompt("Cualquier combinación caracteres es aceptada", jTextField3);
         tp7.changeAlpha(0.5f);
-        tp7.changeStyle(Font.BOLD + Font.ITALIC);
+        tp7.changeStyle(Font.ITALIC);
+        tp8.changeAlpha(0.5f);
+        tp8.changeStyle(Font.ITALIC);
+        tp9.changeAlpha(0.5f);
+        tp9.changeStyle(Font.ITALIC);
+        
+        jRadioButton2.setEnabled(false);
+        jRadioButton3.setEnabled(false);
     }
 
     /**
@@ -79,8 +92,18 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
 
         jTextField1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jTextField1.setToolTipText("");
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField1KeyTyped(evt);
+            }
+        });
 
         jTextField2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField2KeyTyped(evt);
+            }
+        });
 
         jTextField3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
 
@@ -237,10 +260,76 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
+    
+    //PARA VALIDAR EL NOMBRE DE USUARIO Y EL NOMBRE REAL DEL USUARIO
+    public boolean validadorNombres()
+    {
+        
+        ResultSet res, spaceUsed;
+    
+        String testUsers[][] = new String[3][1];
+
+        int tableSize=0, tableSizeComparator=0;
+        
+        res=Conexion.Consulta("execute selectionForAccess");   
+        spaceUsed=Conexion.Consulta("execute getRowCount"); 
+        
+        try{
+            while (spaceUsed.next()){
+             tableSize=spaceUsed.getInt(1);
+            }
+        }catch(SQLException e)
+        {}
        
-        jLabel1.setEnabled(true);
+        try
+        {
+            while(res.next())
+            {
+                testUsers[0][0]=res.getString(1);
+                tableSizeComparator++;
+                
+            if(jTextField1.getText().equals(testUsers[0][0]))
+            {
+                tableSizeComparator=0;
+                JOptionPane.showMessageDialog(null, "El nombre de usuario "+jTextField1.getText()+" ya está en uso ","Error en el nombre de usuario",JOptionPane.PLAIN_MESSAGE);
+               return false;
+            }
+            }
+        }
+        catch(SQLException e)
+        {}
+        
+        
+            if(jTextField1.getText().length()<5 || jTextField1.getText().length()>20)
+            {
+               JOptionPane.showMessageDialog(null, "El nombre de usuario tiene que ser de al "
+                        + "menos 5 caracteres y de máximo 20","Error en el nombre de usuario",JOptionPane.PLAIN_MESSAGE);
+               return false;
+            }
+            else if(jTextField2.getText().length()<10 || jTextField2.getText().length()>50)
+            {
+                JOptionPane.showMessageDialog(null, "El nombre real del usuario tiene que ser de al "
+                        + "menos 10 caracteres y de máximo 50","Error en el nombre real del usuario",JOptionPane.PLAIN_MESSAGE);
+                return false;
+            }
+            else if(jTextField3.getText().length()<5 || jTextField3.getText().length()>30)
+            {
+                JOptionPane.showMessageDialog(null, "La clave debe ser de al menos 5 caracteres y "
+                        + "de máximo 30","Error en la clave",JOptionPane.PLAIN_MESSAGE);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+    }
+    
+    private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
+
+       jLabel1.setEnabled(true);
        jTextField1.setEnabled(true);
+       jTextField1.setEditable(false);
+       jTextField1.setBackground(Color.RED);
         jLabel2.setEnabled(false);
        jTextField2.setEnabled(false);
         jLabel3.setEnabled(false);
@@ -251,6 +340,9 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
 //**********************ELPRIMERO ES ESTE DE ABAJO XDXDXDXDX****************************
     private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
         
+        jTextField1.setEditable(true);
+       jTextField1.setBackground(Color.WHITE);
+        
         jLabel1.setEnabled(true);
        jTextField1.setEnabled(true);
         jLabel2.setEnabled(true);
@@ -259,11 +351,21 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
        jTextField3.setEnabled(true);
         jLabel4.setEnabled(true);
        jComboBox1.setEnabled(true);
+       
+       jRadioButton2.setEnabled(false);
+       jRadioButton3.setEnabled(false);
+       
+       jTextField1.setText("");
+       jTextField2.setText("");
+       jTextField3.setText("");
+       
+       
     }//GEN-LAST:event_jRadioButton1ActionPerformed
 
     private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
-        jLabel1.setEnabled(true);
-       jTextField1.setEnabled(true);
+       jTextField1.setBackground(Color.WHITE);
+        jLabel1.setEnabled(false);
+       jTextField1.setEnabled(false);
         jLabel2.setEnabled(true);
        jTextField2.setEnabled(true);
         jLabel3.setEnabled(true);
@@ -273,6 +375,8 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
     }//GEN-LAST:event_jRadioButton2ActionPerformed
 
     private void jRadioButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton4ActionPerformed
+       jTextField1.setEditable(true);
+       jTextField1.setBackground(Color.WHITE);
         jLabel1.setEnabled(true);
        jTextField1.setEnabled(true);
         jLabel2.setEnabled(false);
@@ -297,17 +401,19 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
 
             if(jRadioButton1.isSelected())
             {
-                pre=conexion.prepareStatement("{call insertNewUser(?,?,?,?)}");
+                if(validadorNombres()==true)
+                {
+                    pre=conexion.prepareStatement("{call insertNewUser(?,?,?,?)}");
 
-                pre.setString(1,jTextField1.getText());
-                pre.setString(2,jTextField2.getText());
-                pre.setString(3,jTextField3.getText());
-                pre.setString(4,String.valueOf(jComboBox1.getSelectedItem()));
-                pre.executeUpdate();
+                    pre.setString(1,jTextField1.getText());
+                    pre.setString(2,jTextField2.getText());
+                    pre.setString(3,jTextField3.getText());
+                    pre.setString(4,String.valueOf(jComboBox1.getSelectedItem()));
+                    pre.executeUpdate();
 
-                JOptionPane.showMessageDialog(null, "usuario "+jTextField2.getText()+" agregado correctamente a  "+String.valueOf(jComboBox1.getSelectedItem())+"es","",JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "USUARIO [ "+jTextField1.getText()+" ] AGREGADO CORRECTAMENTE A "+String.valueOf(jComboBox1.getSelectedItem())+"es","Usuario agregado",JOptionPane.PLAIN_MESSAGE);
 
-
+                }
 
             }
             else if(jRadioButton2.isSelected())
@@ -320,7 +426,7 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                 pre.setString(4,String.valueOf(jComboBox1.getSelectedItem()));
                 pre.executeUpdate();
 
-                JOptionPane.showMessageDialog(null, "Datos del usuario "+jTextField2.getText()+" modificado correctamente","",JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, "DATOS DEL USUARIO ["+jTextField1.getText()+" ] MODIFICADOS CORRECTAMENTE","Usuario modificado",JOptionPane.PLAIN_MESSAGE);
             }
             
             else if(jRadioButton3.isSelected())
@@ -329,7 +435,7 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                 pre.setString(1,jTextField1.getText());
                 pre.executeUpdate();
                 
-                JOptionPane.showMessageDialog(null, "Usuario "+jTextField1.getText()+" eliminado correctamente","",JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, "USUARIO ["+jTextField1.getText()+" ] ELIMINADO CORRECTAMENTE","Usuario eliminado",JOptionPane.PLAIN_MESSAGE);
             }
             
             else if(jRadioButton4.isSelected())
@@ -349,7 +455,9 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                         
                         if((jTextField1.getText()).equals(testUsers[0]))
                         {
-                            JOptionPane.showMessageDialog(null, "Usuario encontrado","",JOptionPane.PLAIN_MESSAGE);
+                            jRadioButton2.setEnabled(true);
+                            jRadioButton3.setEnabled(true);
+                            JOptionPane.showMessageDialog(null, "USUARIO ENCONTRADO \n Usted ahora puede: \n Modificar los datos del usuario \n Eliminar al usuario","USUARIO ENCONTRADO",JOptionPane.PLAIN_MESSAGE);
                             jTextField2.setText(testUsers[1]);
                             jTextField3.setText(testUsers[2]);
                             if(testUsers[3].equals("Administrador"))
@@ -364,14 +472,51 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                         }
 
                     }
-
             }
             
         }
         catch (SQLException e)
-        {JOptionPane.showMessageDialog(null, "ERROR"+e.getMessage());}  
+        {JOptionPane.showMessageDialog(null,e.getMessage());}  
         
     }//GEN-LAST:event_jToggleButton4MouseClicked
+
+    private void jTextField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyTyped
+
+      int numbers = (int) evt.getKeyChar(); 
+        
+      if (numbers >= 33 && numbers <=64|| numbers>=91 && numbers<=96 || numbers >= 123 && numbers <= 223) 
+      { 
+        evt.consume(); 
+        JOptionPane.showMessageDialog(null, "Sólo letras y espacios", "Caracter no válido presionado", JOptionPane.PLAIN_MESSAGE); 
+      }
+
+    }//GEN-LAST:event_jTextField2KeyTyped
+
+    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
+
+        
+    int values = (int) evt.getKeyChar(); 
+        
+      if (values!=8 && (values<48 || values>57) && (values<65 || values>90) && (values<97 || values>122)) 
+      { 
+        evt.consume(); 
+        JOptionPane.showMessageDialog(null, "Sólo letras y números, juntos ","Caracter no válido presionado", JOptionPane.PLAIN_MESSAGE); 
+      }
+        
+        
+        
+      /*PARA QUE SÓLO ACEPTE NÚMEROS, NO APLICA AQUÍ
+      int value = (int) evt.getKeyChar(); 
+        
+      if (value<58 && value>48 || value==8) 
+      {}
+      else
+      {
+        evt.consume(); 
+        JOptionPane.showMessageDialog(null, " Caracter erróneo ", " Error detectado ", JOptionPane.ERROR_MESSAGE); 
+      }
+      */
+    }//GEN-LAST:event_jTextField1KeyTyped
 
     
     /**
