@@ -11,7 +11,7 @@ Tipo_Usuario varchar(13),
 primary key(Id_Usuario)
 )
 
-INSERT INTO Usuarios VALUES('admin','Aurea De La Mora','admin','Administrador')
+INSERT INTO Usuarios VALUES('admina','Aurea De La Mora','admin','Administrador')
 INSERT INTO Usuarios VALUES('seller','Kira Yoshikage','seller','Vendedor')
 
 SELECT * FROM Usuarios
@@ -95,7 +95,7 @@ INSERT INTO Usuarios VALUES(10,'Admin','Admin','Administrador')
 
 --MODIFY USER------------------------
 GO
-CREATE PROCEDURE modifyUser @ID int, @Nombre varchar(20), @Clave varchar(30), @Tipo varchar(13)
+ALTER PROCEDURE modifyUser @ID varchar(20), @Nombre varchar(20), @Clave varchar(30), @Tipo varchar(13)
 AS BEGIN
 UPDATE Usuarios SET Nombre_Usuario=@Nombre, Clave_Usuario=@Clave, Tipo_Usuario=@Tipo where Id_Usuario=@ID
 END
@@ -112,7 +112,7 @@ INSERT INTO Usuarios VALUES(2,'RAasdf','Seller','Vendedor')
 
 --DELETE USER------------------------
 GO
-CREATE PROCEDURE deleteUser @ID int
+ALTER PROCEDURE deleteUser @ID varchar(20)
 AS BEGIN
 DELETE FROM Usuarios WHERE Id_Usuario=@ID
 END
@@ -121,7 +121,7 @@ GO
 drop procedure deleteUser
 GO
 
-execute deleteUser 1
+execute deleteUser admina
 -----------------------------------------------------------
 
 --CONSULT USER------------------------
@@ -142,7 +142,7 @@ INSERT INTO Usuarios VALUES(1,'Seller','Seller','Vendedor')
 
 --BACKUP DATABASE------------------------
 GO
-CREATE PROCEDURE backupDatabase
+ALTER PROCEDURE backupDatabase
 AS BEGIN
 BACKUP DATABASE EDSI TO DISK = 'C:\BACKUPS\EDSI.BAK' WITH DIFFERENTIAL
 END
