@@ -2,6 +2,8 @@ CREATE DATABASE SDCDB
 USE SDCDB
 
 
+
+--COSAS DE LA INTERFAZ ADMINISTRAR USUARIOS*********************************************************************************
 create table Usuarios
 (
 Id_Usuario varchar(20),
@@ -140,6 +142,27 @@ INSERT INTO Usuarios VALUES(1,'Seller','Seller','Vendedor')
 
 -----------------------------------------------------------
 
+
+DELETE FROM Usuarios where Id_Usuario=0
+
+
+
+
+--TERMINAN LAS COSAS DE LA INTERFAZ ADMINISTRAR USUARIOS********************************************************************************
+
+
+
+
+
+
+
+
+
+
+--COSAS DE LA INTERFAZ ADMINISTRAR BASE DE BD*********************************************************************************
+
+
+
 --BACKUP DATABASE------------------------
 GO
 ALTER PROCEDURE backupDatabase
@@ -167,11 +190,9 @@ execute restoreDatabase
 
 
 
+--EJEMPLOS XDXDX
 
 
-
-
-DELETE FROM Usuarios where Id_Usuario=0
 
 -- Esto hace un backup de nuestra base de datos
 BACKUP database SDCDB
@@ -185,3 +206,69 @@ to disk = 'C:\BACKUPS\SDCDB.bak'
 restore database SDCDB
 FROM disk = 'C:\BACKUPS\SDCDB.bak'
 WITH REPLACE
+
+
+
+
+
+--TERMINAN LAS COSAS DE LA INTERFAZ ADMINISTRAR BD********************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--COSAS DE LA INTERFAZ ADMINISTRAR PRODUCTOS***********************************************************************
+
+
+create table Productos
+(
+Id_Producto varchar(20),
+Descrip_Producto varchar(100),
+Cantidad_Producto varchar(10),
+Unidad_Medida_Producto varchar(6),
+primary key(Id_Producto)
+)
+drop table Productos
+
+
+
+
+INSERT INTO Productos VALUES('Nutella','Es uno de los ingredientes más solicitados en las crepas. Es vital cuidarlo.','5','Kilos')
+
+SELECT * FROM Productos
+
+
+
+
+
+
+--INSERTAR PRODUCTO
+GO
+CREATE PROCEDURE insertNewProduct @ID varchar(20), @Descrip varchar(100), @Cantidad varchar(10), @Unidad_Medida varchar(6)
+AS BEGIN
+INSERT INTO Usuarios VALUES(@ID,@Descrip,@Cantidad,@Unidad_Medida)
+END
+GO
+
+DROP PROCEDURE insertNewProducto
+
+EXECUTE insertNewProduct('Crema de cacahuate', 'Sirve para la crepa 13', '2','Litros')
+--TERMINA INSERTAR PRODUCTO
+
+
+
+
+
+
+--TERMINAN LAS COSAS DE LA INTERFAZ ADMINISTRAR PRODUCTOS*****************************************************

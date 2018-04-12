@@ -9,7 +9,6 @@ import java.awt.Font;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import static mainPackage.IngresarAlSistema.conexion;
 
@@ -25,7 +24,6 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
     //static boolean flag=false;
     
     static int tableSize=0,tableSizeComparator=0;
-    static ButtonGroup group = new ButtonGroup();
     static PreparedStatement pre;
     static ResultSet res, spaceUsed;
     static String testUsers[] = new String[4]; //Este arreglo es para conseguir un renglón de datos según el ID cuando el de CONSULTAR está activo
@@ -265,7 +263,7 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
     
     //PARA VALIDAR EL NOMBRE DE USUARIO Y EL NOMBRE REAL DEL USUARIO
     
-    public void fieldCleaner()
+    public static void fieldCleaner()
     {
         jTextField1.setText("");
         jTextField2.setText("");
@@ -273,7 +271,7 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
         jComboBox1.setSelectedIndex(0);
     }
     
-    public boolean validadorNombres()
+    public static boolean validadorNombres()
     {
         tableSize=0;tableSizeComparator=0;
         
