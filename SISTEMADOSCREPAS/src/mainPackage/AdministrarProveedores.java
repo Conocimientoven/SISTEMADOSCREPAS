@@ -17,7 +17,7 @@ import static mainPackage.Conexion.establecido;
 
 /**
  *
- * @author Success
+ * @author Ramón
  */
 public class AdministrarProveedores extends javax.swing.JFrame {
 public static Connection contacto = null;
@@ -27,7 +27,7 @@ public static boolean establecido;
     static PreparedStatement pre;
     String var,var2;
     static ResultSet res, spaceUsed;
-    static String testProviders[] = new String[4];
+    static String testProviders[] = new String[8];
     
     
     public static Connection realizarConexion()
@@ -437,27 +437,39 @@ public static boolean establecido;
        
                     /*pre=conexion.prepareStatement("INSERT INTO customers (customerID, customerName, customerGender, customerCity) VALUES(?,?,?,?)");*/
 
-        pre=conexion.prepareStatement("insert into Proveedores (Id_proveedor, Nombre_proveedor, Domicilio_proveedor, Telefono_proveedor)values(?,?,?,?)");
+        pre=conexion.prepareStatement("insert into Proveedores (Id_Proveedor, Nombre_Proveedor, Teléfono_Proveedor,Código_Postal_Proveedor,Ciudad_Proveedor,Colonia_Proveedor,Calle_Proveedor,Número_Calle_Proveedor)values(?,?,?,?,?,?,?,?)");
         
         pre.setString(1,idTextField.getText());
         pre.setString(2,nameTextField.getText());
-       
-        pre.setString(4,telephoneTextField.getText());
+        pre.setString(3,telephoneTextField.getText());
+        pre.setString(4,cpTextField.getText());
+        pre.setString(5,cityTextField.getText());
+        pre.setString(8,colonyTextField.getText());
+        pre.setString(9,streetTextField.getText());
+        pre.setString(10,numberTextField.getText());
         pre.executeUpdate();
         
         JOptionPane.showMessageDialog(null, " Proveedor "+ nameTextField.getText()+" agregado correctamente a la base de datos  ");/*+String.valueOf(jComboBox1.getSelectedItem())+"es","",JOptionPane.PLAIN_MESSAGE);*/
         idTextField.setText("");
         nameTextField.setText("");
-        
         telephoneTextField.setText("");
+        cpTextField.setText("");
+        cityTextField.setText("");
+        colonyTextField.setText("");
+        streetTextField.setText("");
+        numberTextField.setText("");
         }
             else if(modifyRadioButton.isSelected()){
-                pre=conexion.prepareStatement("alter table Proveedores where Id_Proveedor =  (?,?,?,?)");
+                pre=conexion.prepareStatement("alter table Proveedores where Id_Proveedor =  (?,?,?,?,?,?,?,?)");
 
                 pre.setString(1,idTextField.getText());
                 pre.setString(2,nameTextField.getText());
-                
-                pre.setString(4,telephoneTextField.getText());
+                pre.setString(3,telephoneTextField.getText());
+                pre.setString(4,cpTextField.getText());
+                pre.setString(5,cityTextField.getText());
+                pre.setString(8,colonyTextField.getText());
+                pre.setString(9,streetTextField.getText());
+                pre.setString(10,numberTextField.getText());
                 pre.executeUpdate();
 
                 JOptionPane.showMessageDialog(null, "Los datos del proveedor:  "+nameTextField.getText()+" han sido modificados correctamente","",JOptionPane.PLAIN_MESSAGE);
@@ -475,8 +487,12 @@ public static boolean establecido;
 
                         testProviders[0]=res.getString(1); //Id_Provedor
                         testProviders[1]=res.getString(2);  //Nombre_Proveedor
-                        testProviders[2]=res.getString(3);  //Domicilio_Proveedor
-                        testProviders[3]=res.getString(4);  //Teléfono_Proveedor
+                        testProviders[2]=res.getString(3);  //Teléfono_Proveedor
+                        testProviders[3]=res.getString(4);  //Codigo_Postal_Proveedor
+                        testProviders[4]=res.getString(5);  //Teléfono_Proveedor
+                        testProviders[5]=res.getString(6);  //Teléfono_Proveedor
+                        testProviders[6]=res.getString(7);  //Teléfono_Proveedor
+                        testProviders[7]=res.getString(8);  //Teléfono_Proveedor
                         
                         if((idTextField.getText()).equals(testProviders[0]))
                         {
@@ -504,8 +520,6 @@ public static boolean establecido;
         catch (SQLException e){
             JOptionPane.showMessageDialog(null, "ERROR"+e.getMessage());
         }   
-        
-        
     }//GEN-LAST:event_acceptButtonActionPerformed
 
     private void addRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRadioButtonActionPerformed
@@ -547,7 +561,9 @@ public static boolean establecido;
         modifyRadioButton.setEnabled(false);
         telephoneLabel.setEnabled(false);
         telephoneTextField.setEnabled(false);
-      
+        numberLabel.setEnabled(false);
+        numberTextField.setEnabled(false);
+        setButton.setEnabled(false);
     }//GEN-LAST:event_consultRadioButtonActionPerformed
 
     private void modifyRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyRadioButtonActionPerformed
@@ -576,10 +592,22 @@ public static boolean establecido;
         nameLabel.setEnabled(false);
         nameTextField.setEnabled(false);
         cpLabel.setEnabled(false);
-        
+        cpTextField.setEnabled(false);
+        cityLabel.setEnabled(false);
+        cityTextField.setEnabled(false);
+        colonyLabel.setEnabled(false);
+        colonyTextField.setEnabled(false);
+        streetLabel.setEnabled(false);
+        streetTextField.setEnabled(false);
+        eraseRadioButton.setEnabled(false);
+        modifyRadioButton.setEnabled(false);
         telephoneLabel.setEnabled(false);
         telephoneTextField.setEnabled(false);
-
+        numberLabel.setEnabled(false);
+        numberTextField.setEnabled(false);
+        setButton.setEnabled(false);
+        telephoneLabel.setEnabled(false);
+        telephoneTextField.setEnabled(false);
     }//GEN-LAST:event_eraseRadioButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
