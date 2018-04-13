@@ -9,7 +9,6 @@ import java.awt.Font;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import static mainPackage.IngresarAlSistema.conexion;
 
@@ -23,7 +22,8 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
     Font deletingUser = new Font("Arial",Font.BOLD,12);
     
     //static boolean flag=false;
-    static ButtonGroup group = new ButtonGroup();
+    
+    static int tableSize=0,tableSizeComparator=0;
     static PreparedStatement pre;
     static ResultSet res, spaceUsed;
     static String testUsers[] = new String[4]; //Este arreglo es para conseguir un renglón de datos según el ID cuando el de CONSULTAR está activo
@@ -262,15 +262,23 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
 
     
     //PARA VALIDAR EL NOMBRE DE USUARIO Y EL NOMBRE REAL DEL USUARIO
-    public boolean validadorNombres()
+    
+    public static void fieldCleaner()
     {
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
+        jComboBox1.setSelectedIndex(0);
+    }
+    
+    public static boolean validadorNombres()
+    {
+        tableSize=0;tableSizeComparator=0;
         
         ResultSet res, spaceUsed;
     
         String testUsers[][] = new String[3][1];
 
-        int tableSize=0, tableSizeComparator=0;
-        
         res=Conexion.Consulta("execute selectionForAccess");   
         spaceUsed=Conexion.Consulta("execute getRowCount"); 
         
@@ -412,7 +420,8 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                     pre.executeUpdate();
 
                     JOptionPane.showMessageDialog(null, "USUARIO [ "+jTextField1.getText()+" ] AGREGADO CORRECTAMENTE A "+String.valueOf(jComboBox1.getSelectedItem())+"es","Usuario agregado",JOptionPane.PLAIN_MESSAGE);
-
+                    
+                    fieldCleaner();
                 }
 
             }
@@ -435,7 +444,17 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                 pre.setString(1,jTextField1.getText());
                 pre.executeUpdate();
                 
+                jRadioButton2.setEnabled(false);
+                jRadioButton3.setEnabled(false);
+                jRadioButton4.setSelected(true);
+
                 JOptionPane.showMessageDialog(null, "USUARIO ["+jTextField1.getText()+" ] ELIMINADO CORRECTAMENTE","Usuario eliminado",JOptionPane.PLAIN_MESSAGE);
+                
+                 jTextField1.setBackground(Color.WHITE);
+                 jTextField1.setEditable(true);
+                 fieldCleaner();
+                 
+                 
             }
             
             else if(jRadioButton4.isSelected())
@@ -444,6 +463,15 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                  res=Conexion.Consulta("execute consultUser");   
                  spaceUsed=Conexion.Consulta("execute getRowCount"); 
 
+                 try
+                 {
+                    while (spaceUsed.next())
+                    {
+                       tableSize=spaceUsed.getInt(1);
+                    }
+                 }
+                 catch(SQLException e)
+                 {}
                  
                     while(res.next())
                     {
@@ -453,8 +481,9 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                         testUsers[2]=res.getString(3);  //CLAVE DEL USUARIO
                         testUsers[3]=res.getString(4);  //TIPO DEL USUARIO
                         
-                        if((jTextField1.getText()).equals(testUsers[0]))
+                        if(((jTextField1.getText()).equals(testUsers[0])))
                         {
+                            
                             jRadioButton2.setEnabled(true);
                             jRadioButton3.setEnabled(true);
                             JOptionPane.showMessageDialog(null, "USUARIO ENCONTRADO \n Usted ahora puede: \n Modificar los datos del usuario \n Eliminar al usuario","USUARIO ENCONTRADO",JOptionPane.PLAIN_MESSAGE);
@@ -470,10 +499,14 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                             }
                             break;
                         }
-
+                        else if(tableSizeComparator>tableSize)
+                       {
+                            JOptionPane.showMessageDialog(null, "USUARIO NO ENCONTRADO","USUARIO NO ENCONTRADO",JOptionPane.PLAIN_MESSAGE);
+                            break;
+                        }
+                        tableSizeComparator++;
                     }
-            }
-            
+            }                
         }
         catch (SQLException e)
         {JOptionPane.showMessageDialog(null,e.getMessage());}  

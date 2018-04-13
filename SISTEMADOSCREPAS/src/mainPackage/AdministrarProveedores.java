@@ -7,13 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
-import static javax.swing.JOptionPane.showMessageDialog;
-import static mainPackage.AdministrarUsuarios.pre;
 import static mainPackage.IngresarAlSistema.conexion;
 import java.sql.ResultSet;
-import java.sql.Statement;
-import static mainPackage.AdministrarUsuarios.res;
-import static mainPackage.Conexion.establecido;
 
 /**
  *
@@ -47,6 +42,10 @@ public static boolean establecido;
     
     public AdministrarProveedores() {
         initComponents();
+        //Para que se inicialicen desactivados
+        eraseRadioButton.setEnabled(false); 
+        modifyRadioButton.setEnabled(false);
+        
         this.setLocationRelativeTo(null);
         
         
@@ -119,7 +118,6 @@ public static boolean establecido;
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        mainPanel.setBackground(new java.awt.Color(204, 204, 204));
         mainPanel.setMaximumSize(new java.awt.Dimension(1000, 1000));
 
         idLabel.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -170,7 +168,6 @@ public static boolean establecido;
             }
         });
 
-        addRadioButton.setBackground(new java.awt.Color(204, 204, 204));
         buttonGroup.add(addRadioButton);
         addRadioButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         addRadioButton.setText("Agregar");
@@ -180,7 +177,6 @@ public static boolean establecido;
             }
         });
 
-        modifyRadioButton.setBackground(new java.awt.Color(204, 204, 204));
         buttonGroup.add(modifyRadioButton);
         modifyRadioButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         modifyRadioButton.setText("Modificar");
@@ -190,7 +186,6 @@ public static boolean establecido;
             }
         });
 
-        consultRadioButton.setBackground(new java.awt.Color(204, 204, 204));
         buttonGroup.add(consultRadioButton);
         consultRadioButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         consultRadioButton.setText("Consultar");
@@ -200,7 +195,6 @@ public static boolean establecido;
             }
         });
 
-        eraseRadioButton.setBackground(new java.awt.Color(204, 204, 204));
         buttonGroup.add(eraseRadioButton);
         eraseRadioButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         eraseRadioButton.setText("Eliminar");
@@ -210,7 +204,6 @@ public static boolean establecido;
             }
         });
 
-        mainLabel.setBackground(new java.awt.Color(0, 0, 204));
         mainLabel.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         mainLabel.setText("                   ADMINISTRAR PROVEEDORES");
 
@@ -379,7 +372,7 @@ public static boolean establecido;
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cityLabel)
-                    .addComponent(cityTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
+                    .addComponent(cityTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 24, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(colonyLabel)
@@ -480,7 +473,7 @@ public static boolean establecido;
                 else if(consultRadioButton.isSelected()){
                  res=Conexion.Consulta("execute consultUser");   
                  spaceUsed=Conexion.Consulta("execute getRowCount"); 
-
+                 
                  
                     while(res.next())
                     {
@@ -524,6 +517,9 @@ public static boolean establecido;
 
     private void addRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRadioButtonActionPerformed
         // TODO add your handling code here:
+        numberTextField.setEnabled(true); //Faltaban unos de activarse
+        numberLabel.setEnabled(true);
+        setButton.setEnabled(true);
         acceptButton.setEnabled(true);
         cancelButton.setEnabled(true);
         nameLabel.setEnabled(true);
@@ -543,8 +539,11 @@ public static boolean establecido;
     }//GEN-LAST:event_addRadioButtonActionPerformed
 
     private void consultRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultRadioButtonActionPerformed
-        // TODO add your handling code here:
-        acceptButton.setVisible(false);
+         
+        //Todos los campos, exceptuando ID, se desactivan
+        numberTextField.setEnabled(false);
+        numberLabel.setEnabled(false);
+        setButton.setEnabled(false);
         idLabel.setEnabled(true);
         idTextField.setEnabled(true);
         nameLabel.setEnabled(false);
@@ -557,8 +556,6 @@ public static boolean establecido;
         colonyTextField.setEnabled(false);
         streetLabel.setEnabled(false);
         streetTextField.setEnabled(false);
-        eraseRadioButton.setEnabled(false);
-        modifyRadioButton.setEnabled(false);
         telephoneLabel.setEnabled(false);
         telephoneTextField.setEnabled(false);
         numberLabel.setEnabled(false);
@@ -567,9 +564,12 @@ public static boolean establecido;
     }//GEN-LAST:event_consultRadioButtonActionPerformed
 
     private void modifyRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyRadioButtonActionPerformed
+        numberTextField.setEnabled(true);//Se activan todos los campos a excepción de la ID
+        numberLabel.setEnabled(true);
+        setButton.setEnabled(true);
         acceptButton.setEnabled(true);
-        idLabel.setEnabled(true);
-        idTextField.setEnabled(true);
+        idLabel.setEnabled(false);//Una vez puesta la ID ya no es posible modificarla
+        idTextField.setEnabled(false);
         nameLabel.setEnabled(true);
         nameTextField.setEnabled(true);
         cpLabel.setEnabled(true);
@@ -587,8 +587,12 @@ public static boolean establecido;
     }//GEN-LAST:event_modifyRadioButtonActionPerformed
 
     private void eraseRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eraseRadioButtonActionPerformed
-        
-        acceptButton.setEnabled(true);
+        //Todos los campos, exceptuando ID, se desactivan
+        numberTextField.setEnabled(false); 
+        numberLabel.setEnabled(false);
+        setButton.setEnabled(false);
+        idLabel.setEnabled(true);
+        idTextField.setEnabled(true);
         nameLabel.setEnabled(false);
         nameTextField.setEnabled(false);
         cpLabel.setEnabled(false);
@@ -601,11 +605,14 @@ public static boolean establecido;
         streetTextField.setEnabled(false);
         eraseRadioButton.setEnabled(false);
         modifyRadioButton.setEnabled(false);
+<<<<<<< HEAD
         telephoneLabel.setEnabled(false);
         telephoneTextField.setEnabled(false);
         numberLabel.setEnabled(false);
         numberTextField.setEnabled(false);
         setButton.setEnabled(false);
+=======
+>>>>>>> 44b5c7c575759c33593b4675fab3e22289d7ae9b
         telephoneLabel.setEnabled(false);
         telephoneTextField.setEnabled(false);
     }//GEN-LAST:event_eraseRadioButtonActionPerformed

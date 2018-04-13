@@ -2,6 +2,8 @@ CREATE DATABASE SDCDB
 USE SDCDB
 
 
+
+--COSAS DE LA INTERFAZ ADMINISTRAR USUARIOS*********************************************************************************
 create table Usuarios
 (
 Id_Usuario varchar(20),
@@ -11,7 +13,7 @@ Tipo_Usuario varchar(13),
 primary key(Id_Usuario)
 )
 
-INSERT INTO Usuarios VALUES('admin','Aurea De La Mora','admin','Administrador')
+INSERT INTO Usuarios VALUES('admina','Aurea De La Mora','admin','Administrador')
 INSERT INTO Usuarios VALUES('seller','Kira Yoshikage','seller','Vendedor')
 
 SELECT * FROM Usuarios
@@ -95,7 +97,7 @@ INSERT INTO Usuarios VALUES(10,'Admin','Admin','Administrador')
 
 --MODIFY USER------------------------
 GO
-CREATE PROCEDURE modifyUser @ID int, @Nombre varchar(20), @Clave varchar(30), @Tipo varchar(13)
+ALTER PROCEDURE modifyUser @ID varchar(20), @Nombre varchar(20), @Clave varchar(30), @Tipo varchar(13)
 AS BEGIN
 UPDATE Usuarios SET Nombre_Usuario=@Nombre, Clave_Usuario=@Clave, Tipo_Usuario=@Tipo where Id_Usuario=@ID
 END
@@ -112,7 +114,7 @@ INSERT INTO Usuarios VALUES(2,'RAasdf','Seller','Vendedor')
 
 --DELETE USER------------------------
 GO
-CREATE PROCEDURE deleteUser @ID int
+ALTER PROCEDURE deleteUser @ID varchar(20)
 AS BEGIN
 DELETE FROM Usuarios WHERE Id_Usuario=@ID
 END
@@ -121,7 +123,7 @@ GO
 drop procedure deleteUser
 GO
 
-execute deleteUser 1
+execute deleteUser admina
 -----------------------------------------------------------
 
 --CONSULT USER------------------------
@@ -140,9 +142,30 @@ INSERT INTO Usuarios VALUES(1,'Seller','Seller','Vendedor')
 
 -----------------------------------------------------------
 
+
+DELETE FROM Usuarios where Id_Usuario=0
+
+
+
+
+--TERMINAN LAS COSAS DE LA INTERFAZ ADMINISTRAR USUARIOS********************************************************************************
+
+
+
+
+
+
+
+
+
+
+--COSAS DE LA INTERFAZ ADMINISTRAR BASE DE BD*********************************************************************************
+
+
+
 --BACKUP DATABASE------------------------
 GO
-CREATE PROCEDURE backupDatabase
+ALTER PROCEDURE backupDatabase
 AS BEGIN
 BACKUP DATABASE EDSI TO DISK = 'C:\BACKUPS\EDSI.BAK' WITH DIFFERENTIAL
 END
@@ -167,11 +190,9 @@ execute restoreDatabase
 
 
 
+--EJEMPLOS XDXDX
 
 
-
-
-DELETE FROM Usuarios where Id_Usuario=0
 
 -- Esto hace un backup de nuestra base de datos
 BACKUP database SDCDB
@@ -185,3 +206,69 @@ to disk = 'C:\BACKUPS\SDCDB.bak'
 restore database SDCDB
 FROM disk = 'C:\BACKUPS\SDCDB.bak'
 WITH REPLACE
+
+
+
+
+
+--TERMINAN LAS COSAS DE LA INTERFAZ ADMINISTRAR BD********************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--COSAS DE LA INTERFAZ ADMINISTRAR PRODUCTOS***********************************************************************
+
+
+create table Productos
+(
+Id_Producto varchar(20),
+Descrip_Producto varchar(100),
+Cantidad_Producto varchar(10),
+Unidad_Medida_Producto varchar(6),
+primary key(Id_Producto)
+)
+drop table Productos
+
+
+
+
+INSERT INTO Productos VALUES('Nutella','Es uno de los ingredientes más solicitados en las crepas. Es vital cuidarlo.','5','Kilos')
+
+SELECT * FROM Productos
+
+
+
+
+
+
+--INSERTAR PRODUCTO
+GO
+CREATE PROCEDURE insertNewProduct @ID varchar(20), @Descrip varchar(100), @Cantidad varchar(10), @Unidad_Medida varchar(6)
+AS BEGIN
+INSERT INTO Usuarios VALUES(@ID,@Descrip,@Cantidad,@Unidad_Medida)
+END
+GO
+
+DROP PROCEDURE insertNewProducto
+
+EXECUTE insertNewProduct('Crema de cacahuate', 'Sirve para la crepa 13', '2','Litros')
+--TERMINA INSERTAR PRODUCTO
+
+
+
+
+
+
+--TERMINAN LAS COSAS DE LA INTERFAZ ADMINISTRAR PRODUCTOS*****************************************************
