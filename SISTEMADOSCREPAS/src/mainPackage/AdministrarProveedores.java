@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 
 /**
  *
- * @author Success
+ * @author Ramón
  */
 public class AdministrarProveedores extends javax.swing.JFrame {
 public static Connection contacto = null;
@@ -22,7 +22,7 @@ public static boolean establecido;
     static PreparedStatement pre;
     String var,var2;
     static ResultSet res, spaceUsed;
-    static String testProviders[] = new String[4];
+    static String testProviders[] = new String[8];
     
     
     public static Connection realizarConexion()
@@ -277,6 +277,16 @@ public static boolean establecido;
 
         setButton.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         setButton.setText("Set");
+        setButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                setButtonMouseClicked(evt);
+            }
+        });
+        setButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
@@ -372,7 +382,7 @@ public static boolean establecido;
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cityLabel)
-                    .addComponent(cityTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 24, Short.MAX_VALUE))
+                    .addComponent(cityTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(colonyLabel)
@@ -430,27 +440,39 @@ public static boolean establecido;
        
                     /*pre=conexion.prepareStatement("INSERT INTO customers (customerID, customerName, customerGender, customerCity) VALUES(?,?,?,?)");*/
 
-        pre=conexion.prepareStatement("insert into Proveedores (Id_proveedor, Nombre_proveedor, Domicilio_proveedor, Telefono_proveedor)values(?,?,?,?)");
+        pre=conexion.prepareStatement("insert into Proveedores (Id_Proveedor, Nombre_Proveedor, Teléfono_Proveedor,Código_Postal,Ciudad_Proveedor,Colonia_Proveedor,Calle_Proveedor,Número_Calle)values(?,?,?,?,?,?,?,?)");
         
         pre.setString(1,idTextField.getText());
         pre.setString(2,nameTextField.getText());
-       
-        pre.setString(4,telephoneTextField.getText());
+        pre.setString(3,telephoneTextField.getText());
+        pre.setString(4,cpTextField.getText());
+        pre.setString(5,cityTextField.getText());
+        pre.setString(8,colonyTextField.getText());
+        pre.setString(9,streetTextField.getText());
+        pre.setString(10,numberTextField.getText());
         pre.executeUpdate();
         
         JOptionPane.showMessageDialog(null, " Proveedor "+ nameTextField.getText()+" agregado correctamente a la base de datos  ");/*+String.valueOf(jComboBox1.getSelectedItem())+"es","",JOptionPane.PLAIN_MESSAGE);*/
         idTextField.setText("");
         nameTextField.setText("");
-        
         telephoneTextField.setText("");
+        cpTextField.setText("");
+        cityTextField.setText("");
+        colonyTextField.setText("");
+        streetTextField.setText("");
+        numberTextField.setText("");
         }
             else if(modifyRadioButton.isSelected()){
-                pre=conexion.prepareStatement("alter table Proveedores where Id_Proveedor =  (?,?,?,?)");
+                pre=conexion.prepareStatement("alter table Proveedores where Id_Proveedor =  (?,?,?,?,?,?,?,?)");
 
                 pre.setString(1,idTextField.getText());
                 pre.setString(2,nameTextField.getText());
-                
-                pre.setString(4,telephoneTextField.getText());
+                pre.setString(3,telephoneTextField.getText());
+                pre.setString(4,cpTextField.getText());
+                pre.setString(5,cityTextField.getText());
+                pre.setString(8,colonyTextField.getText());
+                pre.setString(9,streetTextField.getText());
+                pre.setString(10,numberTextField.getText());
                 pre.executeUpdate();
 
                 JOptionPane.showMessageDialog(null, "Los datos del proveedor:  "+nameTextField.getText()+" han sido modificados correctamente","",JOptionPane.PLAIN_MESSAGE);
@@ -468,8 +490,12 @@ public static boolean establecido;
 
                         testProviders[0]=res.getString(1); //Id_Provedor
                         testProviders[1]=res.getString(2);  //Nombre_Proveedor
-                        testProviders[2]=res.getString(3);  //Domicilio_Proveedor
-                        testProviders[3]=res.getString(4);  //Teléfono_Proveedor
+                        testProviders[2]=res.getString(3);  //Teléfono_Proveedor
+                        testProviders[3]=res.getString(4);  //Codigo_Postal_Proveedor
+                        testProviders[4]=res.getString(5);  //Teléfono_Proveedor
+                        testProviders[5]=res.getString(6);  //Teléfono_Proveedor
+                        testProviders[6]=res.getString(7);  //Teléfono_Proveedor
+                        testProviders[7]=res.getString(8);  //Teléfono_Proveedor
                         
                         if((idTextField.getText()).equals(testProviders[0]))
                         {
@@ -497,8 +523,6 @@ public static boolean establecido;
         catch (SQLException e){
             JOptionPane.showMessageDialog(null, "ERROR"+e.getMessage());
         }   
-        
-        
     }//GEN-LAST:event_acceptButtonActionPerformed
 
     private void addRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRadioButtonActionPerformed
@@ -544,7 +568,9 @@ public static boolean establecido;
         streetTextField.setEnabled(false);
         telephoneLabel.setEnabled(false);
         telephoneTextField.setEnabled(false);
-      
+        numberLabel.setEnabled(false);
+        numberTextField.setEnabled(false);
+        setButton.setEnabled(false);
     }//GEN-LAST:event_consultRadioButtonActionPerformed
 
     private void modifyRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyRadioButtonActionPerformed
@@ -591,7 +617,11 @@ public static boolean establecido;
         modifyRadioButton.setEnabled(false);
         telephoneLabel.setEnabled(false);
         telephoneTextField.setEnabled(false);
-
+        numberLabel.setEnabled(false);
+        numberTextField.setEnabled(false);
+        setButton.setEnabled(false);
+        telephoneLabel.setEnabled(false);
+        telephoneTextField.setEnabled(false);
     }//GEN-LAST:event_eraseRadioButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -712,6 +742,87 @@ public static boolean establecido;
         }
     }//GEN-LAST:event_telephoneTextFieldKeyTyped
 
+    private void setButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_setButtonActionPerformed
+
+    private void setButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_setButtonMouseClicked
+        // TODO add your handling code here:
+        
+        String cp = cpTextField.getText();
+        int conver;
+        conver = Integer.parseInt(cp);
+        if((conver >= 49000) && (conver <= 49100)){
+            cityTextField.setText("Ciudad Guzmán");
+        }
+        else if((conver >= 45470) && (conver <= 45579)){
+            cityTextField.setText("Acatic");
+        }
+        else if ((conver >= 45700) && (conver <= 45723)){
+            cityTextField.setText("Acatlan De Juarez");
+        }
+         else if ((conver >= 46730) && (conver <= 46758)){
+            cityTextField.setText("Ahualulco De Mercado");
+        }
+        else if ((conver >= 49370) && (conver <= 49379)){
+            cityTextField.setText("Amacueca");
+        }
+         else if ((conver >= 49380) && (conver <= 49399)){
+            cityTextField.setText("Amatitan");
+        }
+         else if ((conver >= 46600) && (conver <= 46729)){
+            cityTextField.setText("Ameca");
+        }
+          else if ((conver >= 46560) && (conver <= 46580)){
+            cityTextField.setText("Antonio Escobedo");
+        }
+           else if ((conver >= 44200) && (conver <= 44990)){
+            cityTextField.setText("Guadalajara");
+        }
+            else if ((conver >= 45500) && (conver <= 46629)){
+            cityTextField.setText("Tlaquepalque");
+        }
+             else if ((conver >= 48640) && (conver <= 48655)){
+            cityTextField.setText("Chilistaln");
+        }
+              else if ((conver >= 45920) && (conver <= 45940)){
+            cityTextField.setText("Chapala");
+        }
+               else if ((conver >= 48740) && (conver <= 48750)){
+            cityTextField.setText("El Grullo");
+        }
+                 else if ((conver >= 49900) && (conver <= 49940)){
+            cityTextField.setText("Tecatitlan");
+        }
+                   else if ((conver >= 49120) && (conver <= 49130)){
+            cityTextField.setText("Gomez Farias");
+        }
+                     else if ((conver >= 49300) && (conver <= 49339)){
+            cityTextField.setText("Sayula");
+        }
+                       else if ((conver >= 46400) && (conver <= 46433)){
+            cityTextField.setText("Tequila");
+        }
+                         else if ((conver >= 49400) && (conver <= 49427)){
+            cityTextField.setText("Tizapan El Alto");
+        }
+                           else if ((conver >= 49800) && (conver <= 49836)){
+            cityTextField.setText("Tuxpan");
+        }
+                             else if ((conver >= 49540) && (conver <= 49548)){
+            cityTextField.setText("Valle de Juarez");
+        }
+                            
+         else {
+             JOptionPane.showMessageDialog(null, "Código Postal no identificado, por favor ingresa tu ciudad","¡Aviso!",JOptionPane.INFORMATION_MESSAGE);
+         }
+        
+        
+    }//GEN-LAST:event_setButtonMouseClicked
+
+    
+    
+    
     
     public static void main(String args[]) {
         
