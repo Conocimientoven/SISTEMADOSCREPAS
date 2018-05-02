@@ -305,7 +305,7 @@ public class AdministrarProductos extends javax.swing.JFrame {
 
             if(jRadioButton1.isSelected())
             {
-                if(AdministrarUsuarios.validadorNombres()==true)
+                if(AdministrarUsuarios.validadorNombresAgregar()==true)
                 {
                     pre=conexion.prepareStatement("{call insertNewProduct(?,?,?,?)}");
 
