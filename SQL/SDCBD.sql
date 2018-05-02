@@ -13,7 +13,7 @@ Tipo_Usuario varchar(13),
 primary key(Id_Usuario)
 )
 
-INSERT INTO Usuarios VALUES('admina','Aurea De La Mora','admin','Administrador')
+INSERT INTO Usuarios VALUES('admin','Aurea De La Mora','admin','Administrador')
 INSERT INTO Usuarios VALUES('seller','Kira Yoshikage','seller','Vendedor')
 
 SELECT * FROM Usuarios
@@ -167,7 +167,7 @@ DELETE FROM Usuarios where Id_Usuario=0
 GO
 ALTER PROCEDURE backupDatabase
 AS BEGIN
-BACKUP DATABASE EDSI TO DISK = 'C:\BACKUPS\EDSI.BAK' WITH DIFFERENTIAL
+BACKUP DATABASE SDCDB TO DISK = 'C:\BACKUPS\SDCDB.BAK' WITH DIFFERENTIAL
 END
 GO
 
@@ -176,9 +176,9 @@ execute backupDatabase
 
 --RESTORE DATABASE------------------------
 GO
-CREATE PROCEDURE restoreDatabase
+ALTER PROCEDURE restoreDatabase
 AS BEGIN
-RESTORE DATABASE EDSI FROM DISK = 'C:\BACKUPS\SDCDB.bak' WITH REPLACE
+RESTORE DATABASE SDCDB FROM DISK = 'C:\BACKUPS\SDCDB.BAK' WITH REPLACE
 END
 GO
 
