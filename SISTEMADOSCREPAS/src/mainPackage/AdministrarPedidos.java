@@ -35,6 +35,8 @@ public class AdministrarPedidos extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(92, 100, 90));
+
         jComboBox1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Personalizada", "Crepa 1", "Crepa 2", "Crepa 3", "Crepa 4" }));
 

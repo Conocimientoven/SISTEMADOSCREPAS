@@ -14,8 +14,9 @@ import java.sql.ResultSet;
 import javax.swing.ImageIcon;
 import javax.swing.Icon;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.JTextComponent;
+import static mainPackage.AdministrarUsuarios.spaceUsed;
 import static mainPackage.AdministrarUsuarios.tableSizeComparator;
+import static mainPackage.AdministrarUsuarios.testUsers;
 
 /**
  *
@@ -26,9 +27,10 @@ public static Connection contacto = null;
 public static boolean establecido;
 static int counter = 0, counter2 = 0;
 DefaultTableModel model;
+Operaciones operacion = new Operaciones();
 //AutoCompleteDecorator.decorate(consultComboBox);
 
-Operaciones operations =  new Operaciones();
+
 
 
    static ButtonGroup group = new ButtonGroup();
@@ -59,10 +61,40 @@ Operaciones operations =  new Operaciones();
         initComponents();
         
     
-        namePredictiveSearch.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {});
         
         
-        
+                nameComboBox.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+             
+         public void keyReleased(KeyEvent evt) {
+                
+                if(nameRadioButton.isSelected())
+                {
+                String cadenaEscrita = nameComboBox.getEditor().getItem().toString();
+
+                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                   if(comparar(cadenaEscrita)){// compara si el texto escrito se ecuentra en la lista
+                       // busca el texto escrito en la base de datos
+                       buscarProveedores(cadenaEscrita);
+                   }else{// en caso contrario toma como default el elemento 0 o sea el primero de la lista y lo busca.
+                    buscarProveedores(nameComboBox.getItemAt(0).toString());
+                    nameComboBox.setSelectedIndex(0);
+                    }
+                }
+
+
+                if (evt.getKeyCode() >= 65 && evt.getKeyCode() <= 90 || evt.getKeyCode() >= 96 && evt.getKeyCode() <= 105 || evt.getKeyCode() == 8) {
+                    nameComboBox.setModel(operacion.getListaProveedores(cadenaEscrita));
+                    if (nameComboBox.getItemCount() > 0) {
+                        nameComboBox.getEditor().setItem(cadenaEscrita);
+                        nameComboBox.showPopup();                     
+
+                    } else {
+                        nameComboBox.addItem(cadenaEscrita);
+                    }
+                }
+            }
+            }
+        });
         
         
         //Para que se inicialicen desactivados
@@ -77,6 +109,8 @@ Operaciones operations =  new Operaciones();
         
         eraseRadioButton.setEnabled(false); 
         modifyRadioButton.setEnabled(false);
+        idRadioButton.setEnabled(false);
+        nameRadioButton.setEnabled(false);
         
         this.setLocationRelativeTo(null);
         
@@ -85,9 +119,7 @@ Operaciones operations =  new Operaciones();
         id.changeAlpha(0.5f);
         id.changeStyle(Font.BOLD + Font.ITALIC);
         
-        TextPrompt name  = new TextPrompt("Nombre del proveedor", nameTextField);
-        name.changeAlpha(0.5f);
-        name.changeStyle(Font.BOLD + Font.ITALIC);
+        
         
         TextPrompt cp  = new TextPrompt("Código postal ", cpTextField);
         cp.changeAlpha(0.5f);
@@ -116,69 +148,11 @@ Operaciones operations =  new Operaciones();
        
     
 }
-    
-    
-    // Ya instancié el objeto de la clase Operaciones, ya solo me falta hacer para que lo haga el método xD
-      public void search(String name){
-        String dates[] = operations.search(name);
-        if(dates[0]!=null){
-            idTextField.setText(dates[0]);
-            nameTextField.setText(dates[1]);
-            telephoneTextField.setText(dates[2]);
-            cpTextField.setText(dates[3]);
-            cityTextField.setText(dates[4]);
-            colonyTextField.setText(dates[5]);
-            streetTextField.setText(dates[6]);
-            numberTextField.setText(dates[7]);
-            
-            
-        }else {
-            JOptionPane.showMessageDialog(rootPane, "No se encontro ningun archivo", "Error",JOptionPane.WARNING_MESSAGE);
-        }
-     
-    
-    }
-    
-    
-   
-        
-
-        
-        
-     public void keyReleased(KeyEvent evt){
-        
-        String  textGetter = namePredictiveSearch.getEditor().getItem().toString();
-        
-        
-        if(evt.getKeyChar()==KeyEvent.VK_ENTER){
-            search(textGetter);
-        }
-        
-  
-        if(evt.getKeyCode()>=65 &&evt.getKeyCode()<=90 || evt.getKeyCode()>=96 || evt.getKeyCode()<=105|| evt.getKeyCode()==8){ 
-         
-            namePredictiveSearch.setModel(operations.getList(textGetter));
-            if(consultComboBox.getItemCount()>0){
-                
-                namePredictiveSearch.showPopup();
-                if(evt.getKeyCode()!=8){
-                    ((JTextComponent)namePredictiveSearch.getEditor().getEditorComponent()).select(textGetter.length(),namePredictiveSearch.getEditor().getItem().toString().length());
-                
-                
-                }else {
-                    namePredictiveSearch.getEditor().setItem(textGetter);
-                }
-                
-            }else {
-                namePredictiveSearch.addItem(textGetter);
-            }
-        }
-    }//KeyRelased
 
     public void cleanTextFields()
     {
         idTextField.setText("");
-        nameTextField.setText("");
+        nameComboBox.getEditor().setItem("");
         telephoneTextField.setText("");
         cpTextField.setText("");
         cityTextField.setText("");
@@ -192,13 +166,13 @@ Operaciones operations =  new Operaciones();
     private void initComponents() {
 
         buttonGroup = new javax.swing.ButtonGroup();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         Proveedores = new javax.swing.JPanel();
         idLabel = new javax.swing.JLabel();
         nameLabel = new javax.swing.JLabel();
         cpLabel = new javax.swing.JLabel();
         telephoneLabel = new javax.swing.JLabel();
         idTextField = new javax.swing.JTextField();
-        nameTextField = new javax.swing.JTextField();
         telephoneTextField = new javax.swing.JTextField();
         addRadioButton = new javax.swing.JRadioButton();
         modifyRadioButton = new javax.swing.JRadioButton();
@@ -219,12 +193,9 @@ Operaciones operations =  new Operaciones();
         setButton = new javax.swing.JButton();
         lblFondo = new javax.swing.JLabel();
         lblFondito = new javax.swing.JLabel();
-        consultComboBox = new javax.swing.JComboBox<>();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        providersTable = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
-        searchButton = new javax.swing.JButton();
-        namePredictiveSearch = new javax.swing.JComboBox<>();
+        nameComboBox = new javax.swing.JComboBox<>();
+        idRadioButton = new javax.swing.JRadioButton();
+        nameRadioButton = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -254,18 +225,6 @@ Operaciones operations =  new Operaciones();
         idTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 idTextFieldKeyTyped(evt);
-            }
-        });
-
-        nameTextField.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        nameTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nameTextFieldActionPerformed(evt);
-            }
-        });
-        nameTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                nameTextFieldKeyTyped(evt);
             }
         });
 
@@ -334,6 +293,11 @@ Operaciones operations =  new Operaciones();
 
         acceptButton.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         acceptButton.setText("Aceptar");
+        acceptButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                acceptButtonMouseClicked(evt);
+            }
+        });
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 acceptButtonActionPerformed(evt);
@@ -407,84 +371,30 @@ Operaciones operations =  new Operaciones();
             }
         });
 
-        consultComboBox.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        consultComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "---", "Id", "Nombre" }));
-        consultComboBox.addItemListener(new java.awt.event.ItemListener() {
+        nameComboBox.setEditable(true);
+        nameComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                consultComboBoxItemStateChanged(evt);
+                nameComboBoxItemStateChanged(evt);
             }
         });
-        consultComboBox.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                consultComboBoxMouseClicked(evt);
-            }
-        });
-        consultComboBox.addActionListener(new java.awt.event.ActionListener() {
+
+        idRadioButton.setBackground(new java.awt.Color(92, 100, 90));
+        buttonGroup1.add(idRadioButton);
+        idRadioButton.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        idRadioButton.setText("Id");
+        idRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                consultComboBoxActionPerformed(evt);
+                idRadioButtonActionPerformed(evt);
             }
         });
 
-        providersTable.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        providersTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Id_Proveedor", "Nombre_Proveedor", "Teléfono_Proveedor", "Código_Postal", "Ciudad_Proveedor", "Colonia_Proveedor", "Calle_Proveedor", "Número_Calle"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        providersTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                providersTableMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(providersTable);
-        if (providersTable.getColumnModel().getColumnCount() > 0) {
-            providersTable.getColumnModel().getColumn(0).setResizable(false);
-            providersTable.getColumnModel().getColumn(1).setResizable(false);
-            providersTable.getColumnModel().getColumn(2).setResizable(false);
-            providersTable.getColumnModel().getColumn(3).setResizable(false);
-            providersTable.getColumnModel().getColumn(4).setResizable(false);
-            providersTable.getColumnModel().getColumn(5).setResizable(false);
-            providersTable.getColumnModel().getColumn(6).setResizable(false);
-            providersTable.getColumnModel().getColumn(7).setResizable(false);
-        }
-
-        jLabel1.setBackground(new java.awt.Color(204, 204, 204));
-        jLabel1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabel1.setText("Datos Personales:");
-
-        searchButton.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        searchButton.setText("Buscar");
-        searchButton.addActionListener(new java.awt.event.ActionListener() {
+        nameRadioButton.setBackground(new java.awt.Color(92, 100, 90));
+        buttonGroup1.add(nameRadioButton);
+        nameRadioButton.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        nameRadioButton.setText("Nombre");
+        nameRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchButtonActionPerformed(evt);
-            }
-        });
-
-        namePredictiveSearch.setEditable(true);
-        namePredictiveSearch.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                namePredictiveSearchItemStateChanged(evt);
+                nameRadioButtonActionPerformed(evt);
             }
         });
 
@@ -493,9 +403,9 @@ Operaciones operations =  new Operaciones();
         ProveedoresLayout.setHorizontalGroup(
             ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ProveedoresLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ProveedoresLayout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(ProveedoresLayout.createSequentialGroup()
                                 .addComponent(telephoneLabel)
@@ -532,97 +442,73 @@ Operaciones operations =  new Operaciones();
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProveedoresLayout.createSequentialGroup()
-                                .addComponent(nameLabel)
+                                .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(idLabel)
+                                    .addComponent(nameLabel))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(ProveedoresLayout.createSequentialGroup()
-                                .addComponent(idLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(idTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(idTextField)
+                                    .addComponent(nameComboBox, 0, 202, Short.MAX_VALUE))))
+                        .addGap(18, 18, 18)
+                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblFondo, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblFondito, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(ProveedoresLayout.createSequentialGroup()
-                        .addGap(69, 69, 69)
-                        .addComponent(jLabel1)))
-                .addGap(26, 26, 26)
-                .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(addRadioButton)
-                        .addGroup(ProveedoresLayout.createSequentialGroup()
-                            .addGap(4, 4, 4)
-                            .addComponent(lblFondito, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(lblFondo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(ProveedoresLayout.createSequentialGroup()
-                            .addGap(168, 168, 168)
-                            .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(ProveedoresLayout.createSequentialGroup()
-                                    .addComponent(modifyRadioButton)
-                                    .addGap(102, 102, 102)
-                                    .addComponent(eraseRadioButton)
-                                    .addGap(72, 72, 72)
-                                    .addComponent(consultRadioButton))
-                                .addComponent(consultComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProveedoresLayout.createSequentialGroup()
-                            .addComponent(namePredictiveSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 653, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(30, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProveedoresLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(28, 28, 28)
+                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(ProveedoresLayout.createSequentialGroup()
+                                .addComponent(modifyRadioButton)
+                                .addGap(56, 56, 56)
+                                .addComponent(eraseRadioButton))
+                            .addGroup(ProveedoresLayout.createSequentialGroup()
+                                .addGap(206, 206, 206)
+                                .addComponent(idRadioButton)))
+                        .addGap(26, 26, 26)
+                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(consultRadioButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(nameRadioButton, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(ProveedoresLayout.createSequentialGroup()
+                .addGap(59, 59, 59)
                 .addComponent(mainLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(246, 246, 246))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         ProveedoresLayout.setVerticalGroup(
             ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ProveedoresLayout.createSequentialGroup()
                 .addComponent(mainLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addRadioButton)
+                    .addComponent(modifyRadioButton)
+                    .addComponent(eraseRadioButton)
+                    .addComponent(consultRadioButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(idTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(idRadioButton)
+                        .addComponent(nameRadioButton))
+                    .addComponent(idLabel))
                 .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ProveedoresLayout.createSequentialGroup()
-                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(addRadioButton)
-                            .addComponent(modifyRadioButton)
-                            .addComponent(eraseRadioButton)
-                            .addComponent(consultRadioButton))
-                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGap(5, 5, 5)
+                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(ProveedoresLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(consultComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(searchButton))
+                                .addComponent(nameLabel)
+                                .addGap(10, 10, 10))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProveedoresLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(namePredictiveSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(5, 5, 5))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProveedoresLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(idTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(idLabel))
-                        .addGap(5, 5, 5)))
-                .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(ProveedoresLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lblFondito, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
-                            .addComponent(lblFondo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
-                    .addGroup(ProveedoresLayout.createSequentialGroup()
-                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(nameLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(nameComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(telephoneLabel)
-                            .addComponent(telephoneTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cpLabel)
-                            .addComponent(cpTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(setButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(telephoneTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(cpLabel)
+                                .addComponent(setButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cpTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cityLabel)
@@ -634,26 +520,31 @@ Operaciones operations =  new Operaciones();
                         .addGap(8, 8, 8)
                         .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(streetTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(streetLabel))
-                        .addGap(6, 13, Short.MAX_VALUE)
+                            .addComponent(streetLabel)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProveedoresLayout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addComponent(lblFondito, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(ProveedoresLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(numberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(numberLabel))
-                        .addGap(43, 43, 43)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                         .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(22, 22, 22))))
+                            .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(ProveedoresLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(lblFondo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(22, 22, 22))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(Proveedores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(Proveedores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -670,134 +561,12 @@ Operaciones operations =  new Operaciones();
         // TODO add your handling code here:
     }//GEN-LAST:event_idTextFieldActionPerformed
 
-    private void nameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_nameTextFieldActionPerformed
-
     private void telephoneTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_telephoneTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_telephoneTextFieldActionPerformed
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
         // TODO add your handling code here:
-        try
-        {
-            
-        conexion = Conexion.realizarConexion();
-        if(addRadioButton.isSelected()){
-
-        pre=conexion.prepareStatement("{call insertProvider(?,?,?,?,?,?,?,?)}");
-        pre.setString(1,idTextField.getText());
-        pre.setString(2,nameTextField.getText());
-        pre.setString(3,telephoneTextField.getText());
-        pre.setString(4,cpTextField.getText());
-        pre.setString(5,cityTextField.getText());
-        pre.setString(6,colonyTextField.getText());
-        pre.setString(7,streetTextField.getText());
-        pre.setString(8,numberTextField.getText());
-        //pre.setString(4,String.valueOf(jComboBox1.getSelectedItem()));
-        pre.executeUpdate();
-        JOptionPane.showMessageDialog(null, "Proveedor: " +nameTextField.getText() +"Agregado correctamente a la base de datos ","¡Felicitaciones!",JOptionPane.PLAIN_MESSAGE);
-        cleanTextFields();
-        }
-            else if(modifyRadioButton.isSelected()){
-                
-                pre=conexion.prepareStatement("{call modifyProvider(?,?,?,?,?,?,?,?)}");
-                pre.setString(1,idTextField.getText());
-                pre.setString(2,nameTextField.getText());
-                pre.setString(3,telephoneTextField.getText());
-                pre.setString(4,cpTextField.getText());
-                pre.setString(5,cityTextField.getText());
-                pre.setString(6,colonyTextField.getText());
-                pre.setString(7,streetTextField.getText());
-                pre.setString(8,numberTextField.getText());
-                pre.executeUpdate();
-               cleanTextFields();
-
-                JOptionPane.showMessageDialog(null, "Los datos del proveedor:  "+nameTextField.getText()+" han sido modificados correctamente","",JOptionPane.PLAIN_MESSAGE);
-                
-                }
-                       
-                        
-                else if(consultRadioButton.isSelected()){
-                 res=Conexion.Consulta("execute consultProvider");   
-                 spaceUsed=Conexion.Consulta("execute getRowCountProviders"); 
-                   
-                   try {
-                       while(spaceUsed.next()){
-                           tableSize=spaceUsed.getInt(1);
-                       }
-                   }
-                   catch(SQLException e){
-                   }
-                    while(res.next())
-                    {
-                        
-                        testProviders[0]=res.getString(1); //Id_Provedor
-                        testProviders[1]=res.getString(2);  //Nombre_Proveedor
-                        testProviders[2]=res.getString(3);  //Teléfono_Proveedor
-                        testProviders[3]=res.getString(4);  //Codigo_Postal
-                        testProviders[4]=res.getString(5);  //Ciudad_Proveedor
-                        testProviders[5]=res.getString(6);  //Colonia_Proveedor
-                        testProviders[6]=res.getString(7);  //Calle_Proveedor
-                        testProviders[7]=res.getString(8);  //Número_Proveedor
-                        
-                        
-                        if((idTextField.getText()).equals(testProviders[0]))
-                        {
-                            
-                              
-                            eraseRadioButton.setEnabled(true);
-                            modifyRadioButton.setEnabled(true);
-                            JOptionPane.showMessageDialog(null, "Proveedor encontrado \n Usted ahora puede: \n Modificar los datos del proveedor \n Eliminar al proveedor","¡Felicitaciones!",JOptionPane.PLAIN_MESSAGE);
-                            nameTextField.setText(testProviders[1]);
-                            telephoneTextField.setText(testProviders[2]);
-                            cpTextField.setText(testProviders[3]);
-                            cityTextField.setText(testProviders[4]);
-                            colonyTextField.setText(testProviders[5]);
-                            streetTextField.setText(testProviders[6]);
-                            numberTextField.setText(testProviders[7]);
-                            break;
-                            }
-                        
-                        else if(tableSizeComparator>tableSize){
-                            
-                            JOptionPane.showMessageDialog(null, "Proveedor no encontrado","¡Alerta!",JOptionPane.ERROR_MESSAGE);
-                            idTextField.setText("");
-                            break;
-                        }
-                                     tableSizeComparator++;
-                    }
-                        }
-                
-                else if (eraseRadioButton.isSelected()){
-                String name = idTextField.getText();
-                pre=conexion.prepareStatement("{call deleteProvider(?)}");
-                pre.setString(1,idTextField.getText());
-                pre.executeUpdate();
-                JOptionPane.showMessageDialog(null, " Los datos del proveedor:  "+name+" han sido eliminados correctamente","¡Felicitaciones!",JOptionPane.PLAIN_MESSAGE);
-                idTextField.setText("");
-                nameTextField.setText("");
-                telephoneTextField.setText("");
-                cpTextField.setText("");
-                cityTextField.setText("");
-                colonyTextField.setText("");
-                streetTextField.setText("");
-                numberTextField.setText("");
-                
-                
-                eraseRadioButton.setEnabled(false);
-                modifyRadioButton.setEnabled(false);
-                consultRadioButton.setSelected(true);
-                            
-                        }
-                
-        }
-        
-        
-        catch (SQLException e){
-            JOptionPane.showMessageDialog(null, "ERROR"+e.getMessage());
-        }   
     }//GEN-LAST:event_acceptButtonActionPerformed
 
     private void addRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRadioButtonActionPerformed
@@ -806,6 +575,7 @@ Operaciones operations =  new Operaciones();
         setEnabledTextFields();
         eraseRadioButton.setEnabled(false);
         modifyRadioButton.setEnabled(false);
+        nameLabel.setEnabled(true);
     }//GEN-LAST:event_addRadioButtonActionPerformed
 
     private void consultRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultRadioButtonActionPerformed
@@ -817,13 +587,17 @@ Operaciones operations =  new Operaciones();
         modifyRadioButton.setEnabled(true);
         consultRadioButton.setEnabled(true);
         eraseRadioButton.setEnabled(true);
-        consultComboBox.setEnabled(true);
+        nameRadioButton.setEnabled(true);
+        idRadioButton.setEnabled(true);
         idTextField.setEnabled(true);
+        idTextField.setEnabled(false);
+        nameComboBox.setEnabled(false);
+        
     }//GEN-LAST:event_consultRadioButtonActionPerformed
 
     public void setEnabledLabels(){
         idLabel.setEnabled(true);
-        nameLabel.setEnabled(true);
+        nameComboBox.setEnabled(true);
         telephoneLabel.setEnabled(true);
         cpLabel.setEnabled(true);
         cityLabel.setEnabled(true);
@@ -834,7 +608,7 @@ Operaciones operations =  new Operaciones();
     
     public void setEnabledTextFields() {
         idTextField.setEnabled(true);
-        nameTextField.setEnabled(true);
+        nameComboBox.setEnabled(true);
         telephoneTextField.setEnabled(true);
         cpTextField.setEnabled(true);
         cityTextField.setEnabled(true);
@@ -845,7 +619,7 @@ Operaciones operations =  new Operaciones();
     
     public void setDisabledTextFields(){
         idTextField.setEnabled(false);
-        nameTextField.setEnabled(false);
+        nameComboBox.setEnabled(false);
         telephoneTextField.setEnabled(false);
         cpTextField.setEnabled(false);
         cityTextField.setEnabled(false);
@@ -860,7 +634,9 @@ Operaciones operations =  new Operaciones();
             eraseRadioButton.setEnabled(true);
             acceptButton.setEnabled(true);
             setButton.setEnabled(true);
-            consultComboBox.setEnabled(true);
+            nameRadioButton.setEnabled(true);
+            idRadioButton.setEnabled(true);
+            nameRadioButton.setEnabled(true);
     }
     
     public void setDisabledAllButtons() {
@@ -869,7 +645,7 @@ Operaciones operations =  new Operaciones();
             eraseRadioButton.setEnabled(false);
             acceptButton.setEnabled(false);
             setButton.setEnabled(false);
-            consultComboBox.setEnabled(false);
+            nameRadioButton.setEnabled(false);
     }
     
     private void modifyRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyRadioButtonActionPerformed
@@ -877,6 +653,8 @@ Operaciones operations =  new Operaciones();
         setEnabledTextFields();
         setEnabledLabels();
         idTextField.setEnabled(false);
+        idRadioButton.setEnabled(false);
+        nameRadioButton.setEnabled(false);
     }//GEN-LAST:event_modifyRadioButtonActionPerformed
       
     public void setDisabledLabels() {
@@ -895,13 +673,47 @@ Operaciones operations =  new Operaciones();
         //Todos los campos, exceptuando ID, se desactivan
         setDisabledAllButtons();    
         setDisabledTextFields();
-        setDisabledLabels();
+        setEnabledLabels();
         cancelButton.setEnabled(true);
         acceptButton.setEnabled(true);
-        idLabel.setEnabled(true);
-        idTextField.setEnabled(true);        
+        idTextField.setEnabled(true);  
+        idRadioButton.setEnabled(false);
+        nameRadioButton.setEnabled(false);
     }//GEN-LAST:event_eraseRadioButtonActionPerformed
 
+    
+    
+     private boolean comparar(String cadena){
+     Object [] lista = nameComboBox.getComponents();
+     boolean encontrado=false;
+        for (Object object : lista) {
+            if(cadena.equals(object)){
+                encontrado = true;
+              break;
+            }
+
+        }
+       return encontrado;
+    }
+    
+    public void buscarProveedores(String nombre) {
+        String datos[] = operacion.buscarProveedores(nombre);
+
+        if (datos[0] != null) {
+            idTextField.setText(datos[0]);
+            nameComboBox.getEditor().setItem(datos[1]);
+            telephoneTextField.setText(datos[2]);
+            cpTextField.setText(datos[3]);
+            cityTextField.setText(datos[4]);
+            colonyTextField.setText(datos[5]);
+            streetTextField.setText(datos[6]);
+            numberTextField.setText(datos[7]);            
+
+        } else {
+
+            JOptionPane.showMessageDialog(rootPane, "No se encontro ningun archivo", "Error", JOptionPane.WARNING_MESSAGE);
+        }
+    }
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         // TODO add your handling code here:
         JOptionPane.showMessageDialog(null," Operación cancelada ");
@@ -927,49 +739,6 @@ Operaciones operations =  new Operaciones();
             JOptionPane.showMessageDialog(null," Introduce sólo números","Error",JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_idTextFieldKeyTyped
-
-    private void nameTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameTextFieldKeyTyped
-        // TODO add your handling code here:
-        int counterr = 0;
-        int validator = (int)evt.getKeyChar();
-        char validator2 = evt.getKeyChar();
-        boolean state = true;
-        String converter = nameTextField.getText();
-        int counter = 0;
-        if(nameTextField.getText().length() == 40){
-            evt.consume();
-            JOptionPane.showMessageDialog(null,"Longitud de caracteres máxima alcanzada","¡Error!",JOptionPane.ERROR_MESSAGE);
-        }
-        else if(Character.isDigit(validator2)){
-            getToolkit().beep();
-            evt.consume();
-            JOptionPane.showMessageDialog(null," Introduce sólo letras","Error",JOptionPane.ERROR_MESSAGE);
-        }
-        else if(state == true){
-            for(int i = 0; i < nameTextField.getText().length(); i ++){
-            
-            if((converter.charAt(i) == ' ')||(converter.charAt(i) == '.')){
-               state = false;
-               counter ++;
-               if(counter >= 1){
-                   state = false;
-                   counter = 0;
-                   i ++;
-                   evt.consume();
-                  JOptionPane.showMessageDialog(null," No puedes introducir dos espacios o puntos seguidos","Error",JOptionPane.ERROR_MESSAGE);
-                  
-               }
-               else if(counter == 0){
-                        nameTextFieldKeyTyped(evt);
-               }
-         
-        }
-       
-        }
-        }
-        
-        
-    }//GEN-LAST:event_nameTextFieldKeyTyped
 
     private void cpTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cpTextFieldKeyTyped
         // TODO add your handling code here:
@@ -1129,62 +898,182 @@ Operaciones operations =  new Operaciones();
         
     }//GEN-LAST:event_setButtonMouseClicked
 
-    private void consultComboBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_consultComboBoxMouseClicked
+    
+    
+    
+    
+    private void nameComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_nameComboBoxItemStateChanged
         // TODO add your handling code here:
         
         
-    }//GEN-LAST:event_consultComboBoxMouseClicked
+    }//GEN-LAST:event_nameComboBoxItemStateChanged
 
-    private void consultComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultComboBoxActionPerformed
+    private void idRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idRadioButtonActionPerformed
         // TODO add your handling code here:
-        
-       if(consultComboBox.getSelectedItem().equals("Id")){
+        if(idRadioButton.isSelected()){
             idTextField.setEnabled(true);
-            nameTextField.setEnabled(false);
-            namePredictiveSearch.setEnabled(false);
-            nameTextField.setText("");
-            JOptionPane.showMessageDialog(null,"Has seleccionado consultar por Id"," Consulta por Id",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null,"Has seleccionado búsqueda por Id","¡Aviso!",JOptionPane.INFORMATION_MESSAGE);
         }
-        else if(consultComboBox.getSelectedItem().equals("Nombre")){
-            nameTextField.setEnabled(true);
+        else {
             idTextField.setEnabled(false);
-            namePredictiveSearch.setEnabled(true);
-            idTextField.setText("");
-            JOptionPane.showMessageDialog(null,"Has seleccionado consultar por nombre"," Consulta por Nombre",JOptionPane.INFORMATION_MESSAGE);
         }
-    }//GEN-LAST:event_consultComboBoxActionPerformed
+    }//GEN-LAST:event_idRadioButtonActionPerformed
 
-    private void consultComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_consultComboBoxItemStateChanged
+    private void nameRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameRadioButtonActionPerformed
+        // TODO add your handling code here:
+        
+        if(nameRadioButton.isSelected()){
+            nameComboBox.setEnabled(true);
+            JOptionPane.showMessageDialog(null,"Has seleccionado búsqueda por nombre","¡Aviso!",JOptionPane.INFORMATION_MESSAGE);
+
+        }
+        else {
+            nameComboBox.setEnabled(false);
+
+        }
+    }//GEN-LAST:event_nameRadioButtonActionPerformed
+
+    private void acceptButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_acceptButtonMouseClicked
         // TODO add your handling code here:
         
         
-       
-    }//GEN-LAST:event_consultComboBoxItemStateChanged
-
-    
-    
-    MétodosSDC methods = new MétodosSDC();
-    
-    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-            //methods.searchProvider(nameTextField.getText(),consultComboBox.getSelectedItem().toString(),tlbDatos);
-            //methods.searchProvider(nameTextField.getText(), consultComboBox.getSelectedItem().toString(), providersTable); 
-    }//GEN-LAST:event_searchButtonActionPerformed
-
-    private void providersTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_providersTableMouseClicked
-        // TODO add your handling code here:
-       // if(consultComboBox.getSelectedItem()
+        try
+        {
             
-        
-            
-        
-         
-    }//GEN-LAST:event_providersTableMouseClicked
+        conexion = Conexion.realizarConexion();
+        if(addRadioButton.isSelected()){
 
-    private void namePredictiveSearchItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_namePredictiveSearchItemStateChanged
-        // TODO add your handling code here:
+        pre=conexion.prepareStatement("{call insertProvider(?,?,?,?,?,?,?,?)}");
+        pre.setString(1,idTextField.getText());
+        //pre.setString(2,nameTextField.getText());
+        pre.setString(2,nameComboBox.getEditor().getItem().toString());
+        pre.setString(3,telephoneTextField.getText());
+        pre.setString(4,cpTextField.getText());
+        pre.setString(5,cityTextField.getText());
+        pre.setString(6,colonyTextField.getText());
+        pre.setString(7,streetTextField.getText());
+        pre.setString(8,numberTextField.getText());
+        //pre.setString(4,String.valueOf(jComboBox1.getSelectedItem()));
+        pre.executeUpdate();
+        JOptionPane.showMessageDialog(null, "Proveedor: " +nameComboBox.getEditor().getItem().toString() +"Agregado correctamente a la base de datos ","¡Felicitaciones!",JOptionPane.PLAIN_MESSAGE);
+        cleanTextFields();
+        }
+            else if(modifyRadioButton.isSelected()){
+                
+                pre=conexion.prepareStatement("{call modifyProvider(?,?,?,?,?,?,?,?)}");
+                pre.setString(1,idTextField.getText());
+                pre.setString(2,nameComboBox.getEditor().getItem().toString());
+                pre.setString(3,telephoneTextField.getText());
+                pre.setString(4,cpTextField.getText());
+                pre.setString(5,cityTextField.getText());
+                pre.setString(6,colonyTextField.getText());
+                pre.setString(7,streetTextField.getText());
+                pre.setString(8,numberTextField.getText());
+                pre.executeUpdate();
+                cleanTextFields();
+
+                JOptionPane.showMessageDialog(null, "Los datos del proveedor han sido modificados correctamente","¡Felicitaciones!",JOptionPane.INFORMATION_MESSAGE);
+                
+                }
+                       
+                        
+                else if(consultRadioButton.isSelected()){
+                 res=Conexion.Consulta("execute consultProvider ");   
+                 spaceUsed=Conexion.Consulta("execute getRowCountProviders"); 
+                 
+                 try
+                 {
+                    while (spaceUsed.next())
+                    {
+                       tableSize=spaceUsed.getInt(1);
+                    }
+                 }
+                 catch(SQLException e)
+                 {}
+                 String totalCount [] = new String [tableSize];
+                 while(res.next()){
+                     testProviders[0] =  res.getString(1);
+                     testProviders[1] =  res.getString(2);
+                     testProviders[2] =  res.getString(3);
+                     testProviders[3] =  res.getString(4);
+                     testProviders[4] =  res.getString(5);
+                     testProviders[5] =  res.getString(6);
+                     testProviders[6] =  res.getString(7);
+                     testProviders[7] =  res.getString(8);
+                     
+                     if(idRadioButton.isSelected()){
+                     
+
+                        if((idTextField.getText()).equals(testProviders[0]))
+                        {
+                            eraseRadioButton.setEnabled(true);
+                            modifyRadioButton.setEnabled(true);
+                            JOptionPane.showMessageDialog(null, "Proveedor encontrado \n Usted ahora puede: \n Modificar los datos del proveedor \n Eliminar al proveedor","¡Felicitaciones!",JOptionPane.PLAIN_MESSAGE);
+                            nameComboBox.getEditor().setItem(testProviders[1]);
+                            telephoneTextField.setText(testProviders[2]);
+                            cpTextField.setText(testProviders[3]);
+                            cityTextField.setText(testProviders[4]);
+                            colonyTextField.setText(testProviders[5]);
+                            streetTextField.setText(testProviders[6]);
+                            numberTextField.setText(testProviders[7]);
+                          
+                            }
+                        
+                        else if(tableSizeComparator>tableSize){
+                            
+                            JOptionPane.showMessageDialog(null, "Proveedor no encontrado5","¡Error!",JOptionPane.ERROR_MESSAGE);
+                            idTextField.setText("");
+                            
+                        }
+                     }
+                     else if(nameRadioButton.isSelected()) {
+                         if(((nameComboBox.getEditor().getItem().toString()).equals(testProviders[1]))) {
+                             idRadioButton.setEnabled(false);
+                             nameRadioButton.setEnabled(false);
+                             JOptionPane.showMessageDialog(null, " Proveedor encontrado \n Usted ahora puede: \n Modificar los datos del proveedor \n Eliminar al proveedor","¡Proveedor encontrado¡¡",JOptionPane.INFORMATION_MESSAGE);
+                             idTextField.setText(testProviders[0]);
+                             nameComboBox.getEditor().setItem(testProviders[1]);
+                             telephoneTextField.setText(testProviders[2]);
+                             cpTextField.setText(testProviders[3]);
+                             cityTextField.setText(testProviders[4]);
+                             colonyTextField.setText(testProviders[5]);
+                             streetTextField.setText(testProviders[6]);
+                             numberTextField.setText(testProviders[7]);
+                             break;
+                          
+                         }
+                          else if(tableSizeComparator==tableSize-1)
+                           {
+                                JOptionPane.showMessageDialog(null, "Proveedor no encnotrado6","¡Error!",JOptionPane.ERROR_MESSAGE);
+                                break;
+                            }                         
+                     
+                     }
+                                     tableSizeComparator++;
+                     
+                 }
+                    tableSizeComparator=0;
+                        }
+                
+                else if (eraseRadioButton.isSelected()){
+                String name = idTextField.getText();
+                pre=conexion.prepareStatement("{call deleteProvider(?)}");
+                pre.setString(1,idTextField.getText());
+                pre.executeUpdate();
+                JOptionPane.showMessageDialog(null, " Los datos del proveedor:  "+nameComboBox.getEditor().getItem().toString()+" han sido eliminados correctamente","¡Felicitaciones!",JOptionPane.PLAIN_MESSAGE);
+                cleanTextFields();
+                eraseRadioButton.setEnabled(false);
+                modifyRadioButton.setEnabled(false);
+                consultRadioButton.setSelected(true);
+                            
+                        }                
+        }
         
         
-    }//GEN-LAST:event_namePredictiveSearchItemStateChanged
+        catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "ERROR"+e.getMessage());
+        }  
+    }//GEN-LAST:event_acceptButtonMouseClicked
 
     
     
@@ -1204,31 +1093,28 @@ Operaciones operations =  new Operaciones();
     private javax.swing.JButton acceptButton;
     private javax.swing.JRadioButton addRadioButton;
     private javax.swing.ButtonGroup buttonGroup;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel cityLabel;
     private javax.swing.JTextField cityTextField;
     private javax.swing.JLabel colonyLabel;
     private javax.swing.JTextField colonyTextField;
-    private javax.swing.JComboBox<String> consultComboBox;
     private javax.swing.JRadioButton consultRadioButton;
     private javax.swing.JLabel cpLabel;
     private javax.swing.JTextField cpTextField;
     private javax.swing.JRadioButton eraseRadioButton;
     private javax.swing.JLabel idLabel;
+    private javax.swing.JRadioButton idRadioButton;
     private javax.swing.JTextField idTextField;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblFondito;
     private javax.swing.JLabel lblFondo;
     private javax.swing.JLabel mainLabel;
     private javax.swing.JRadioButton modifyRadioButton;
+    private javax.swing.JComboBox<String> nameComboBox;
     private javax.swing.JLabel nameLabel;
-    private javax.swing.JComboBox<String> namePredictiveSearch;
-    private javax.swing.JTextField nameTextField;
+    private javax.swing.JRadioButton nameRadioButton;
     private javax.swing.JLabel numberLabel;
     private javax.swing.JTextField numberTextField;
-    private javax.swing.JTable providersTable;
-    private javax.swing.JButton searchButton;
     private javax.swing.JButton setButton;
     private javax.swing.JLabel streetLabel;
     private javax.swing.JTextField streetTextField;
