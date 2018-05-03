@@ -712,7 +712,7 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                                 jRadioButton2.setEnabled(true);
                                 jRadioButton3.setEnabled(true);
                                 JOptionPane.showMessageDialog(null, "USUARIO ENCONTRADO \n Usted ahora puede: \n Modificar los datos del usuario \n Eliminar al usuario","USUARIO ENCONTRADO",JOptionPane.PLAIN_MESSAGE);
-                                jComboBox2.getEditor().setItem(testUsers[1]);
+                                jTextField1.setText(testUsers[0]);
                                 jTextField3.setText(testUsers[2]);
                                 if(testUsers[3].equals("Administrador"))
                                 {
@@ -732,6 +732,8 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                         }
                         else if(jRadioButton7.isSelected())
                         {
+                            jRadioButton2.setEnabled(false);
+                            jRadioButton3.setEnabled(false);
                             System.out.println(tableSizeComparator);
                             totalConsult[tableSizeComparator]=testUsers[0];
                             if(tableSizeComparator==tableSize-1)

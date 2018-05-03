@@ -6,11 +6,20 @@
 package mainPackage;
 
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import static mainPackage.IngresarAlSistema.conexion;
 
@@ -24,10 +33,12 @@ public class AdministrarBD extends javax.swing.JFrame {
     /**
      * Creates new form generarReportes
      */
-    public AdministrarBD() {
+    public AdministrarBD() throws IOException {
         
         initComponents();
         this.setLocationRelativeTo(null);
+        jTextField1.setText((readFile("savePath.txt")));
+        jTextField2.setText((readFile("recoveryPath.txt")));
     }
 
     /**
@@ -48,11 +59,13 @@ public class AdministrarBD extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jButton1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jButton1.setText("Respaldar base de datos");
+        jButton1.setText("Guardar");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton1MouseClicked(evt);
@@ -60,7 +73,7 @@ public class AdministrarBD extends javax.swing.JFrame {
         });
 
         jButton2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jButton2.setText("Recuperar base de datos");
+        jButton2.setText("Recuperar");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton2MouseClicked(evt);
@@ -79,10 +92,17 @@ public class AdministrarBD extends javax.swing.JFrame {
                 jButton3MouseClicked(evt);
             }
         });
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
-        jLabel1.setText("Ruta a donde se guardará");
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel1.setText("Carpeta en la que se guardará");
 
-        jLabel2.setText("Ruta de donde se recuperará");
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel2.setText("Archivo de donde se recuperará");
 
         jButton4.setText("Examinar...");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -106,46 +126,53 @@ public class AdministrarBD extends javax.swing.JFrame {
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton4)
-                            .addComponent(jButton5))))
-                .addContainerGap(35, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(94, 94, 94)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(57, 57, 57))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel2)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jButton5)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton4)))
+                        .addComponent(jSeparator2)))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(59, 59, 59)
+                .addGap(67, 67, 67)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
                     .addComponent(jButton4))
                 .addGap(18, 18, 18)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
                     .addComponent(jButton5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(57, 57, 57)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();
@@ -154,10 +181,29 @@ public class AdministrarBD extends javax.swing.JFrame {
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
         
+        
+        Writer writer=null;
+        try 
+        {
+            writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream("savePath.txt"), "utf-8"));
+            writer.write(jTextField1.getText());
+        } 
+        catch (IOException ex) 
+        {
+            System.out.println("ERROR AL GUARDAR");
+        } 
+        finally 
+        {
+           try {writer.close();} catch (Exception ex) {/*ignore*/}
+        }
+        
+        
         try
         {
             conexion = Conexion.realizarConexion();
-            pre=conexion.prepareStatement("{call backupDatabase}");
+            pre=conexion.prepareStatement("{call backupDatabase(?)}");
+            pre.setString(1,jTextField1.getText());
+            
             JOptionPane.showMessageDialog(null, "Base de datos respaldada","",JOptionPane.PLAIN_MESSAGE);
         }
         catch (SQLException e)
@@ -166,10 +212,28 @@ public class AdministrarBD extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-       try
+
+        
+         Writer writer=null;
+        try 
+        {
+            writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream("recoveryPath.txt"), "utf-8"));
+            writer.write(jTextField2.getText());
+        } 
+        catch (IOException ex) 
+        {
+            System.out.println("ERROR AL GUARDAR");
+        } 
+        finally 
+        {
+           try {writer.close();} catch (Exception ex) {/*ignore*/}
+        }
+        
+        try
         {
             conexion = Conexion.realizarConexion();
-            pre=conexion.prepareStatement("{call restoreDatabase}");
+            pre=conexion.prepareStatement("{call restoreDatabase(?)}");
+            pre.setString(1,(jTextField2.getText()));
             JOptionPane.showMessageDialog(null, "Base de datos restaurada","",JOptionPane.PLAIN_MESSAGE);
         }
         catch (SQLException e)
@@ -188,44 +252,52 @@ public class AdministrarBD extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         
-       
+        JFileChooser fc = new JFileChooser();
+        fc.setDialogTitle("Seleccionar carpeta...");
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fc.setAcceptAllFileFilterUsed(false);
+        if(fc.showOpenDialog(this)==JFileChooser.APPROVE_OPTION)
+        {jTextField1.setText((fc.getSelectedFile().toString())+('\\')+"SDCDB.bak");}
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
-        JFileChooser jFileChooser1 = new JFileChooser("HOME");
-        File archivo = jFileChooser1.getSelectedFile();
-        
-        int seleccion = jFileChooser1.showDialog(null, "Seleccionar");
-        
-        
-        jFileChooser1.setFileSelectionMode(javax.swing.JFileChooser.FILES_AND_DIRECTORIES);
-
-        
-        jFileChooser1.setDialogTitle("Seleccionar carpeta...");
-        switch(seleccion) 
-        {
-        case JFileChooser.APPROVE_OPTION:
-         
-        JFileChooser file=new JFileChooser();
-         file.showSaveDialog(this);
-        File guarda =file.getSelectedFile();
-         
-         jTextField1.setText(guarda+"");
-
-         break;
-
-        case JFileChooser.CANCEL_OPTION:
-            
-         break;
-
-        case JFileChooser.ERROR_OPTION:
-         //llega aqui si sucede un error
-         break;
-        }
-
+        JFileChooser fc = new JFileChooser();
+        fc.setDialogTitle("Seleccionar archivo...");
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fc.setAcceptAllFileFilterUsed(false);
+        FileFilter filter = new FileNameExtensionFilter("BACKUP FILE","BAK");
+        fc.setFileFilter(filter);
+        if(fc.showOpenDialog(this)==JFileChooser.APPROVE_OPTION)
+        { jTextField2.setText(fc.getSelectedFile().toString());}
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    
+    static String readFile(String fileName) throws IOException 
+        {
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
+            try 
+            {
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
+
+                while (line != null) 
+                {
+                    sb.append(line);
+                    line = br.readLine();
+                }
+                return sb.toString();
+            } 
+            finally 
+            {
+            br.close();
+            }
+        }
+    
     /**
      * @param args the command line arguments
      */
@@ -257,7 +329,11 @@ public class AdministrarBD extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdministrarBD().setVisible(true);
+                try {
+                    new AdministrarBD().setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(AdministrarBD.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -270,6 +346,8 @@ public class AdministrarBD extends javax.swing.JFrame {
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
