@@ -5,6 +5,9 @@
  */
 package mainPackage;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -146,7 +149,12 @@ public class InterfazAdministrador extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-        AdministrarBD AdministrarBD  = new AdministrarBD();
+        AdministrarBD AdministrarBD = null;
+        try {
+            AdministrarBD = new AdministrarBD();
+        } catch (IOException ex) {
+            Logger.getLogger(InterfazAdministrador.class.getName()).log(Level.SEVERE, null, ex);
+        }
         AdministrarBD.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton3MouseClicked
