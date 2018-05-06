@@ -200,9 +200,10 @@ public class AdministrarBD extends javax.swing.JFrame {
         
         try
         {
-            conexion = Conexion.realizarConexion();
+            conexion = Conexion.realizarConexionMaster();
             pre=conexion.prepareStatement("{call backupDatabase(?)}");
             pre.setString(1,jTextField1.getText());
+            pre.executeBatch();
             
             JOptionPane.showMessageDialog(null, "Base de datos respaldada","",JOptionPane.PLAIN_MESSAGE);
         }
@@ -231,9 +232,10 @@ public class AdministrarBD extends javax.swing.JFrame {
         
         try
         {
-            conexion = Conexion.realizarConexion();
+            conexion = Conexion.realizarConexionMaster();
             pre=conexion.prepareStatement("{call restoreDatabase(?)}");
             pre.setString(1,(jTextField2.getText()));
+            pre.executeBatch();
             JOptionPane.showMessageDialog(null, "Base de datos restaurada","",JOptionPane.PLAIN_MESSAGE);
         }
         catch (SQLException e)

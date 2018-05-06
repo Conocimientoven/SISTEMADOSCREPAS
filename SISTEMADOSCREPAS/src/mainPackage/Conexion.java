@@ -38,6 +38,20 @@ public class Conexion {
                  return null;
 	}
     }
+    public static Connection realizarConexionMaster()
+    {
+	try{
+		Connection co;
+		co=DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=master;","sa","sa");
+		establecido=true;
+                return co;
+                
+	}catch(SQLException ex){
+		 JOptionPane.showMessageDialog(null,ex.getMessage());
+		establecido=false;
+                 return null;
+	}
+    }
     
     
     public static Connection getConexion(){

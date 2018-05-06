@@ -7,7 +7,7 @@ USE SDCDB
 create table Usuarios
 (
 Id_Usuario varchar(20),
-Nombre_Usuario varchar(50),
+Nombre_Usuario varchar(100),
 Clave_Usuario varchar(30),
 Tipo_Usuario varchar(13),
 primary key(Id_Usuario)
@@ -97,7 +97,7 @@ INSERT INTO Usuarios VALUES(10,'Admin','Admin','Administrador')
 
 --MODIFY USER------------------------
 GO
-ALTER PROCEDURE modifyUser @ID varchar(20), @Nombre varchar(20), @Clave varchar(30), @Tipo varchar(13)
+CREATE PROCEDURE modifyUser @ID varchar(20), @Nombre varchar(20), @Clave varchar(30), @Tipo varchar(13)
 AS BEGIN
 UPDATE Usuarios SET Nombre_Usuario=@Nombre, Clave_Usuario=@Clave, Tipo_Usuario=@Tipo where Id_Usuario=@ID
 END
@@ -114,7 +114,7 @@ INSERT INTO Usuarios VALUES(2,'RAasdf','Seller','Vendedor')
 
 --DELETE USER------------------------
 GO
-ALTER PROCEDURE deleteUser @ID varchar(20)
+CREATE PROCEDURE deleteUser @ID varchar(20)
 AS BEGIN
 DELETE FROM Usuarios WHERE Id_Usuario=@ID
 END
@@ -165,47 +165,31 @@ DELETE FROM Usuarios where Id_Usuario=0
 
 --BACKUP DATABASE------------------------
 GO
-ALTER PROCEDURE backupDatabase
+ALTER PROCEDURE backupDatabase @ruta varchar(100)
 AS BEGIN
-BACKUP DATABASE SDCDB TO DISK = 'C:\BACKUPS\SDCDB.BAK' WITH DIFFERENTIAL
+SET NOCOUNT ON
+BACKUP DATABASE SDCDB TO DISK = @ruta WITH DIFFERENTIAL
 END
 GO
 
-execute backupDatabase
+execute backupDatabase 'C:\BACKUPS\SDCDB.bak'
 -----------------------------------------------------------
 
 --RESTORE DATABASE------------------------
 GO
-ALTER PROCEDURE restoreDatabase
+ALTER PROCEDURE restoreDatabase @ruta varchar(100)
 AS BEGIN
-RESTORE DATABASE SDCDB FROM DISK = 'C:\BACKUPS\SDCDB.BAK' WITH REPLACE
+SET NOCOUNT ON
+RESTORE DATABASE SDCDB FROM DISK = @ruta WITH REPLACE
 END
 GO
 
-execute restoreDatabase
+
+
+
+execute restoreDatabase "C:\BACKUPS\SDCDB.bak"
 -----------------------------------------------------------
 
-
-
-
-
-
---EJEMPLOS XDXDX
-
-
-
--- Esto hace un backup de nuestra base de datos
-BACKUP database SDCDB
-to disk = 'C:\BACKUPS\SDCDB.bak'
-
--- drop database sistec
--- esto elimina la base de datos y si no hay backup valio :'c
-
-
--- Esto restaura la base de datos
-restore database SDCDB
-FROM disk = 'C:\BACKUPS\SDCDB.bak'
-WITH REPLACE
 
 
 
@@ -272,3 +256,170 @@ EXECUTE insertNewProduct('Crema de cacahuate', 'Sirve para la crepa 13', '2','Li
 
 
 --TERMINAN LAS COSAS DE LA INTERFAZ ADMINISTRAR PRODUCTOS*****************************************************
+
+
+--*****************************************************INTERFAZ VENDEDOR*****************************************************
+
+create table Pedidos
+(
+Id_Pedido varchar(20),
+Estado_Pago varchar(9),
+Estado_Entrega varchar(12),
+Fecha_Pedido varchar(20),
+Costo_Pedido int,
+primary key(Id_Pedido)
+)
+drop table Pedidos
+
+SELECT Id_Pedido from Pedidos
+
+SELECT * FROM Pedidos order by len(Id_Pedido),Id_Pedido
+
+SELECT * FROM Pedidos where (Estado_Pago='No pagado' OR Estado_Entrega='No entregado')
+
+
+SELECT COUNT(*) FROM Pedidos WITH (NOLOCK) WHERE (Estado_Pago='No pagado' OR Estado_Entrega='No entregado')
+
+INSERT INTO Pedidos VALUES('0','No pagado','No entregado',(SELECT SYSDATETIME()),0)
+INSERT INTO Pedidos VALUES(((SELECT TOP 1 Id_Pedido FROM Pedidos ORDER BY Id_Pedido DESC)+1),'No Pagado','No Entregado',(SELECT SYSDATETIME()),100)
+
+SELECT COUNT(*) FROM Pedidos WITH (NOLOCK) WHERE (Estado_Pago='No pagado' OR Estado_Entrega='No entregado')
+--************AGREGAR UN NUEVO PEDIDO********************
+GO
+ALTER PROCEDURE insertarPedido
+AS BEGIN
+INSERT INTO Pedidos VALUES
+(
+	((SELECT TOP 1 Id_Pedido FROM Pedidos ORDER BY cast(Id_Pedido as int) DESC)+1),'No pagado','No entregado',(SELECT SYSDATETIME()),0
+)
+END
+GO
+
+
+
+SELECT * FROM Pedidos where (Estado_Pago='No pagado' OR Estado_Entrega='No entregado') ORDER BY cast(Id_Pedido as int) DESC
+SELECT Id_Pedido FROM Pedidos  ORDER BY cast(Id_Pedido as int) DESC
+
+
+
+
+
+EXECUTE insertarPedido
+
+drop procedure insertarPedido
+
+select * from Pedidos order by len(Id_Pedido),Id_Pedido
+
+SELECT COUNT(*) FROM Pedidos WITH (NOLOCK)
+execute getRowCount
+
+--************FIN AGREGAR UN NUEVO PEDIDO********************
+
+
+--********************************CANCELAR PEDIDO**********************
+GO
+CREATE PROCEDURE cancelarPedido @Id_Pedido varchar(20)
+AS BEGIN
+UPDATE Pedidos SET Estado_Entrega='CANCELADO', Estado_Pago='CANCELADO' where (Id_Pedido=@Id_Pedido)
+END
+GO
+
+
+
+--********************************PEDIDO CANCELADO********************************
+
+create table Crepas
+(
+Id_Crepa varchar(20),
+Costo_Crepa int,
+Cantidad_Crepa int,
+Ingredientes_Crepa varchar (100),
+Adornos_Crepa varchar(100),
+LugarConsumo_Crepa varchar(10),
+Id_Pedido varchar(20),
+foreign key (Id_Pedido) REFERENCES Pedidos(Id_Pedido),
+)
+
+drop table Crepas
+
+
+--************AGREGAR UNA CREPA A UN PEDIDO********************
+GO
+CREATE PROCEDURE insertarCrepa @Id_Crepa varchar(20), @Costo_Crepa int, @Cantidad_Crepa int, @Ingredientes_Crepa varchar(100), @Adornos_Crepa varchar(100), @LugarConsumo_Crepa varchar(10),@Id_Pedido varchar(20)
+AS BEGIN
+INSERT INTO Crepas VALUES
+(
+	@Id_Crepa, @Costo_Crepa,@Cantidad_Crepa, @Ingredientes_Crepa, @Adornos_Crepa, @LugarConsumo_Crepa,@Id_Pedido
+)
+END
+GO
+
+SELECT * FROM Crepas
+EXECUTE insertarCrepa 'Crepa1','55','1','Nutella,Fresa,1BolitaNieve,1BolitaNieve','Chocolate','Llevar','28'
+
+drop procedure insertarCrepa
+
+
+SELECT Id_Crepa FROM Crepas WHERE Id_Pedido='28' ORDER BY cast(Id_Crepa AS varchar) DESC
+
+
+--*************FIN AGREGAR UNA CREPA A UN PEDIDO********************
+
+
+--*************CREPA ENTREGADA********************
+GO
+ALTER PROCEDURE deliveredCrepe @Id_Pedido varchar(20)
+AS BEGIN
+UPDATE Pedidos SET Estado_Entrega='Entregado' where (Id_Pedido=@Id_Pedido)
+END
+GO
+--*************FIN CREPA ENTREGADA********************
+
+--*************CREPA ENTREGADA********************
+GO
+ALTER PROCEDURE paidCrepe @Id_Pedido varchar(20)
+AS BEGIN
+UPDATE Pedidos SET Estado_Pago='Pagado' where (Id_Pedido=@Id_Pedido)
+END
+GO
+
+SELECT * FROM Pedidos
+
+execute paidCrepe 1
+execute deliveredCrepe 2
+--*************FIN CREPA ENTREGADA********************
+
+
+
+--*******************************RELLENAR LISTA DE CREPAS DE ACUERDO A SU PEDIDO********************************
+
+GO
+ALTER PROCEDURE consultarCrepa @Id_Pedido varchar(20)
+AS BEGIN
+SELECT * From Crepas Where Id_Pedido=@Id_Pedido
+END
+GO
+
+execute consultarCrepa 28
+
+
+--*******************************FIN RELLENAR LISTA DE CREPAS DE ACUERDO A SU PEDIDO********************************
+
+--*******************************RELLENAR DATOS DE LA CREPA********************************
+
+GO
+ALTER PROCEDURE consultarCrepa @Id_Pedido varchar(20)
+AS BEGIN
+SELECT * From Crepas Where Id_Pedido=@Id_Pedido
+END
+GO
+
+execute consultarCrepa 28
+
+
+--*******************************RELLENAR DATOS DE LA CREPA********************************
+
+
+
+
+--*****************************************************TERMINA INTERFAZ VENDEDOR*****************************************************
