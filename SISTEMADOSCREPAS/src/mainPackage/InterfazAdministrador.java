@@ -34,52 +34,67 @@ public class InterfazAdministrador extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        usersButton = new javax.swing.JButton();
+        providersButton = new javax.swing.JButton();
+        bdButton = new javax.swing.JButton();
+        goBackButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        reportsButton = new javax.swing.JButton();
+        productsButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(92, 100, 90));
 
-        jButton1.setText("Administrar usuarios");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        usersButton.setText("Administrar usuarios");
+        usersButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                usersButtonActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Administrar proveedores");
+        providersButton.setText("Administrar proveedores");
+        providersButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                providersButtonActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Administrar BD");
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+        bdButton.setText("Administrar BD");
+        bdButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton3MouseClicked(evt);
+                bdButtonMouseClicked(evt);
+            }
+        });
+        bdButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bdButtonActionPerformed(evt);
             }
         });
 
-        jButton4.setText("Volver");
-        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+        goBackButton.setText("Volver");
+        goBackButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton4MouseClicked(evt);
+                goBackButtonMouseClicked(evt);
+            }
+        });
+        goBackButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                goBackButtonActionPerformed(evt);
             }
         });
 
-        jButton5.setText("Generar reportes");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        reportsButton.setText("Generar reportes");
+        reportsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                reportsButtonActionPerformed(evt);
             }
         });
 
-        jButton6.setText("Administrar productos");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        productsButton.setText("Administrar productos");
+        productsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                productsButtonActionPerformed(evt);
             }
         });
 
@@ -91,16 +106,16 @@ public class InterfazAdministrador extends javax.swing.JFrame {
                 .addGap(37, 37, 37)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(usersButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(providersButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(bdButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(productsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(reportsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(goBackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(13, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 310, Short.MAX_VALUE)
@@ -111,13 +126,13 @@ public class InterfazAdministrador extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(42, 42, 42)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(usersButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(providersButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bdButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(productsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(reportsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(116, 116, 116)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(goBackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -136,19 +151,19 @@ public class InterfazAdministrador extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void usersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usersButtonActionPerformed
         AdministrarUsuarios AdministrarUsuarios  = new AdministrarUsuarios ();
         AdministrarUsuarios.setVisible(true);
         dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_usersButtonActionPerformed
 
-    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+    private void goBackButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_goBackButtonMouseClicked
         IngresarAlSistema IngresarAlSistema  = new IngresarAlSistema ();
         IngresarAlSistema.setVisible(true);
         dispose();
-    }//GEN-LAST:event_jButton4MouseClicked
+    }//GEN-LAST:event_goBackButtonMouseClicked
 
-    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+    private void bdButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bdButtonMouseClicked
         AdministrarBD AdministrarBD = null;
         try {
             AdministrarBD = new AdministrarBD();
@@ -157,15 +172,20 @@ public class InterfazAdministrador extends javax.swing.JFrame {
         }
         AdministrarBD.setVisible(true);
         dispose();
-    }//GEN-LAST:event_jButton3MouseClicked
+    }//GEN-LAST:event_bdButtonMouseClicked
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void productsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productsButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
+        AdministrarProductos products = new AdministrarProductos();
+        products.setVisible(true);
+        dispose();
+        
+    }//GEN-LAST:event_productsButtonActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void reportsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportsButtonActionPerformed
         // TODO add your handling code here:
         
+<<<<<<< HEAD
         JOptionPane.showMessageDialog(null, "abriendo facturas...","¡Aviso!",JOptionPane.INFORMATION_MESSAGE);/*+String.valueOf(jComboBox1.getSelectedItem())+"es","",JOptionPane.PLAIN_MESSAGE);*/
         GenerarReportes fact = null;
         try {
@@ -173,9 +193,37 @@ public class InterfazAdministrador extends javax.swing.JFrame {
         } catch (Exception ex) {
             Logger.getLogger(InterfazAdministrador.class.getName()).log(Level.SEVERE, null, ex);
         }
+=======
+        JOptionPane.showMessageDialog(null, "La interfaz reportes está cargando...","¡Aviso!",JOptionPane.INFORMATION_MESSAGE);/*+String.valueOf(jComboBox1.getSelectedItem())+"es","",JOptionPane.PLAIN_MESSAGE);*/
+        GenerarReportes fact  = new GenerarReportes();
+>>>>>>> abb82d127b964ef634e4e474486249300cbf1524
         fact.setVisible(true);
         dispose();
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_reportsButtonActionPerformed
+
+    private void providersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_providersButtonActionPerformed
+        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(null, "La interfaz proveedores está cargando...","¡Aviso!",JOptionPane.INFORMATION_MESSAGE);/*+String.valueOf(jComboBox1.getSelectedItem())+"es","",JOptionPane.PLAIN_MESSAGE);*/
+        AdministrarProveedores providers = new AdministrarProveedores();
+        providers.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_providersButtonActionPerformed
+
+    private void bdButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bdButtonActionPerformed
+        try {
+            // TODO add your handling code here:
+            AdministrarBD BD = new AdministrarBD();
+            BD.setVisible(true);
+            dispose();
+        } catch (IOException ex) {
+            Logger.getLogger(InterfazAdministrador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }//GEN-LAST:event_bdButtonActionPerformed
+
+    private void goBackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goBackButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_goBackButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -214,13 +262,13 @@ public class InterfazAdministrador extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
+    private javax.swing.JButton bdButton;
+    private javax.swing.JButton goBackButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton productsButton;
+    private javax.swing.JButton providersButton;
+    private javax.swing.JButton reportsButton;
+    private javax.swing.JButton usersButton;
     // End of variables declaration//GEN-END:variables
 }

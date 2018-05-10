@@ -4,17 +4,26 @@
  * and open the template in the editor.
  */
 package mainPackage;
-
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import static mainPackage.AdministrarProveedores.establecido;
+import static mainPackage.AdministrarUsuarios.validadorNombresAgregar;
 import static mainPackage.IngresarAlSistema.conexion;
 
 /**
  *
- * @author Success
+ * @author Ramón
  */
 public class AdministrarProductos extends javax.swing.JFrame {
 
@@ -22,6 +31,27 @@ public class AdministrarProductos extends javax.swing.JFrame {
     static ResultSet res, spaceUsed;
     static int tableSize=0,tableSizeComparator=0;
     static String testUsers[] = new String[4];
+    Operaciones operacion = new Operaciones();
+    
+    public static Connection realizarConexion()
+    {
+	try{
+		Connection co;
+		co=DriverManager.getConnection("jdbc:sqlserver://RAMON-SON:1433;databaseName=SDCDB;","sa","sa");
+		establecido=true;
+                return co;
+                
+	}catch(SQLException ex){
+		 JOptionPane.showMessageDialog(null,ex.getMessage());
+		establecido=false;
+                 return null;
+	}
+    }
+    
+    
+   
+    
+        
     
     
     /**
@@ -29,7 +59,69 @@ public class AdministrarProductos extends javax.swing.JFrame {
      */
     public AdministrarProductos() {
         initComponents();
+        
+         idComboBox.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+             
+         public void keyReleased(KeyEvent evt) {
+                
+                
+                String cadenaEscrita = idComboBox.getEditor().getItem().toString();
+
+                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                   if(comparar(cadenaEscrita)){// compara si el texto escrito se ecuentra en la lista
+                       // busca el texto escrito en la base de datos
+                       //buscarProductos(cadenaEscrita);
+                       buscarProductos(cadenaEscrita);
+                   }else{// en caso contrario toma como default el elemento 0 o sea el primero de la lista y lo busca.
+                    buscarProductos(idComboBox.getItemAt(0).toString());
+                    idComboBox.setSelectedIndex(0);
+                    }
+                }
+
+
+                if (evt.getKeyCode() >= 65 && evt.getKeyCode() <= 90 || evt.getKeyCode() >= 96 && evt.getKeyCode() <= 105 || evt.getKeyCode() == 8) {
+                    idComboBox.setModel(operacion.getListaProductos(cadenaEscrita));
+                    if (idComboBox.getItemCount() > 0) {
+                        idComboBox.getEditor().setItem(cadenaEscrita);
+                        idComboBox.showPopup();                     
+
+                    } else {
+                        idComboBox.addItem(cadenaEscrita);
+                    }
+                }
+            
+            }
+        });
+         
+         
+        
+        ImageIcon crepasLogotype = new ImageIcon("src/images/cre.jpg");
+        ImageIcon logoProductoss =  new ImageIcon("src/images/producto.jpg");
+        Icon icono2 = new ImageIcon(logoProductoss.getImage().getScaledInstance(logoProductos.getWidth(), logoProductos.getHeight(), Image.SCALE_DEFAULT));
+        Icon icono = new ImageIcon(crepasLogotype.getImage().getScaledInstance(logoCrepas.getWidth(), logoCrepas.getHeight(), Image.SCALE_DEFAULT));
+        logoCrepas.setIcon(icono);
+        logoProductos.setIcon(icono2);
+        this.repaint();
+
+
+        
+        
         this.setLocationRelativeTo(null);
+        
+        
+        TextPrompt amount = new TextPrompt("Cantidad...", amountTextField);
+        amount.changeAlpha(0.5f);
+        amount.changeStyle(Font.BOLD + Font.ITALIC);
+        
+        modifyRadioButton.setEnabled(false);
+        eraseRadioButton.setEnabled(false);
+        
+        idComboBox.setEnabled(false);
+        descriptionTextArea.setEnabled(false);
+        amountTextField.setEnabled(false);
+        sizeComboBox.setEnabled(false);
+        
+        
     }
 
     /**
@@ -42,184 +134,220 @@ public class AdministrarProductos extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jToggleButton1 = new javax.swing.JToggleButton();
-        jButton3 = new javax.swing.JButton();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField1 = new javax.swing.JTextField();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
-        jLabel5 = new javax.swing.JLabel();
+        sizeComboBox = new javax.swing.JComboBox<>();
+        amountLabel = new javax.swing.JLabel();
+        descriptionLabel = new javax.swing.JLabel();
+        idLabel = new javax.swing.JLabel();
+        cancelButton = new javax.swing.JButton();
+        amountTextField = new javax.swing.JTextField();
+        addRadioButton = new javax.swing.JRadioButton();
+        modifyRadioButton = new javax.swing.JRadioButton();
+        eraseRadioButton = new javax.swing.JRadioButton();
+        consultRadioButton = new javax.swing.JRadioButton();
+        logoLabel = new javax.swing.JLabel();
+        logoCrepas = new javax.swing.JLabel();
+        acceptButton = new javax.swing.JButton();
+        idComboBox = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        descriptionTextArea = new javax.swing.JTextArea();
+        logoProductos = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(92, 100, 90));
 
-        jComboBox1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kilos", "Litros" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        sizeComboBox.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        sizeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "---", "Kilos", "Litros", "Botes" }));
+        sizeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                sizeComboBoxActionPerformed(evt);
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabel3.setText("Cantidad:");
+        amountLabel.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        amountLabel.setText("Cantidad:");
 
-        jLabel2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabel2.setText("Descripción:");
+        descriptionLabel.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        descriptionLabel.setText("Descripción:");
 
-        jLabel1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabel1.setText("ID:");
+        idLabel.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        idLabel.setText("ID:");
 
-        jToggleButton1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jToggleButton1.setText("Aceptar");
-        jToggleButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        cancelButton.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        cancelButton.setText("Cancelar");
+        cancelButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jToggleButton1MouseClicked(evt);
+                cancelButtonMouseClicked(evt);
             }
         });
-        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+
+        amountTextField.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        amountTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                amountTextFieldKeyTyped(evt);
+            }
+        });
+
+        addRadioButton.setBackground(new java.awt.Color(92, 100, 90));
+        buttonGroup1.add(addRadioButton);
+        addRadioButton.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        addRadioButton.setText("Agregar");
+        addRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton1ActionPerformed(evt);
+                addRadioButtonActionPerformed(evt);
             }
         });
 
-        jButton3.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jButton3.setText("Cancelar");
-
-        jTextField3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-
-        jTextField2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-
-        jTextField1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-
-        jRadioButton1.setBackground(new java.awt.Color(92, 100, 90));
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jRadioButton1.setText("Agregar");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        modifyRadioButton.setBackground(new java.awt.Color(92, 100, 90));
+        buttonGroup1.add(modifyRadioButton);
+        modifyRadioButton.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        modifyRadioButton.setText("Modificar");
+        modifyRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
+                modifyRadioButtonActionPerformed(evt);
             }
         });
 
-        jRadioButton2.setBackground(new java.awt.Color(92, 100, 90));
-        buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jRadioButton2.setText("Modificar");
-        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+        eraseRadioButton.setBackground(new java.awt.Color(92, 100, 90));
+        buttonGroup1.add(eraseRadioButton);
+        eraseRadioButton.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        eraseRadioButton.setText("Eliminar");
+        eraseRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton2ActionPerformed(evt);
+                eraseRadioButtonActionPerformed(evt);
             }
         });
 
-        jRadioButton3.setBackground(new java.awt.Color(92, 100, 90));
-        buttonGroup1.add(jRadioButton3);
-        jRadioButton3.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jRadioButton3.setText("Eliminar");
-        jRadioButton3.addActionListener(new java.awt.event.ActionListener() {
+        consultRadioButton.setBackground(new java.awt.Color(92, 100, 90));
+        buttonGroup1.add(consultRadioButton);
+        consultRadioButton.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        consultRadioButton.setText("Consultar");
+        consultRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton3ActionPerformed(evt);
+                consultRadioButtonActionPerformed(evt);
             }
         });
 
-        jRadioButton4.setBackground(new java.awt.Color(92, 100, 90));
-        buttonGroup1.add(jRadioButton4);
-        jRadioButton4.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jRadioButton4.setText("Consultar");
-        jRadioButton4.addActionListener(new java.awt.event.ActionListener() {
+        logoLabel.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        logoLabel.setText("ADMINISTRACIÓN DE PRODUCTOS");
+
+        acceptButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        acceptButton.setText("Aceptar");
+        acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton4ActionPerformed(evt);
+                acceptButtonActionPerformed(evt);
+            }
+        });
+        acceptButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                acceptButtonKeyTyped(evt);
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel5.setText("ADMINISTRACIÓN DE PRODUCTOS");
+        idComboBox.setEditable(true);
+
+        descriptionTextArea.setColumns(20);
+        descriptionTextArea.setRows(5);
+        descriptionTextArea.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                descriptionTextAreaKeyTyped(evt);
+            }
+        });
+        jScrollPane1.setViewportView(descriptionTextArea);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(100, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jRadioButton1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jRadioButton2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jRadioButton3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jRadioButton4)
-                        .addGap(58, 58, 58))
+                        .addComponent(logoLabel)
+                        .addGap(98, 98, 98))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addGap(98, 98, 98))))
+                        .addComponent(modifyRadioButton)
+                        .addGap(38, 38, 38)
+                        .addComponent(eraseRadioButton)
+                        .addGap(38, 38, 38)
+                        .addComponent(consultRadioButton)
+                        .addGap(38, 38, 38))))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(54, 54, 54)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
-                        .addGap(14, 14, 14)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jTextField3)
-                                .addGap(18, 18, 18)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addGap(0, 137, Short.MAX_VALUE))
+                                .addGap(64, 64, 64)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(idLabel)
+                                    .addComponent(addRadioButton)
+                                    .addComponent(amountLabel))
+                                .addGap(16, 16, 16))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(descriptionLabel)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(amountTextField)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(sizeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(idComboBox, 0, 292, Short.MAX_VALUE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 50, 50)
+                        .addComponent(logoCrepas, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(logoProductos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(13, 13, 13)
-                .addComponent(jLabel5)
+                .addComponent(logoLabel)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton4)
-                    .addComponent(jRadioButton3)
-                    .addComponent(jRadioButton2)
-                    .addComponent(jRadioButton1))
+                    .addComponent(consultRadioButton)
+                    .addComponent(eraseRadioButton)
+                    .addComponent(modifyRadioButton)
+                    .addComponent(addRadioButton))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(idLabel)
+                    .addComponent(idComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(logoProductos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)))
+                        .addComponent(descriptionLabel)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3))
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(amountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(amountLabel))
+                    .addComponent(sizeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(logoCrepas, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -237,129 +365,188 @@ public class AdministrarProductos extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void sizeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sizeComboBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_sizeComboBoxActionPerformed
 
-    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+    private void addRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRadioButtonActionPerformed
+
+        idComboBox.setEditable(true);
+        idComboBox.setBackground(Color.WHITE);
+
+        idLabel.setEnabled(true);
+        idComboBox.setEnabled(true);
+        amountLabel.setEnabled(true);
+        descriptionTextArea.setEnabled(true);
+        amountLabel.setEnabled(true);
+        amountTextField.setEnabled(false);        
+        sizeComboBox.setEnabled(false);
+
+        modifyRadioButton.setEnabled(false);
+        eraseRadioButton.setEnabled(false);
+
+        idComboBox.getEditor().setItem("");
+        descriptionTextArea.setText("");
+        amountTextField.setText("");
+
+    }//GEN-LAST:event_addRadioButtonActionPerformed
+
+    private void modifyRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyRadioButtonActionPerformed
+        idComboBox.setBackground(Color.WHITE);
+        idLabel.setEnabled(false);
+        idComboBox.setEnabled(false);
+        amountLabel.setEnabled(true);
+        descriptionTextArea.setEnabled(true);
+        amountLabel.setEnabled(true);
+        amountTextField.setEnabled(true);       
+        sizeComboBox.setEnabled(true);
+        modifyRadioButton.setEnabled(false);
+        eraseRadioButton.setEnabled(false);
+    }//GEN-LAST:event_modifyRadioButtonActionPerformed
+
+    private void eraseRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eraseRadioButtonActionPerformed
+        amountLabel.setEnabled(true);
+        idLabel.setEnabled(true);
+        idComboBox.setEnabled(true);
+        idComboBox.setEditable(false);
+        amountLabel.setEnabled(false);
+        descriptionTextArea.setEnabled(false);
+        amountTextField.setEnabled(false);
+        sizeComboBox.setEnabled(false);
+    }//GEN-LAST:event_eraseRadioButtonActionPerformed
+
+    private void consultRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultRadioButtonActionPerformed
+        idComboBox.setEditable(true);
+        idLabel.setEnabled(true);
+        idComboBox.setEnabled(true);
+        amountLabel.setEnabled(false);
+        descriptionTextArea.setEnabled(false);
+        amountLabel.setEnabled(true);
+        amountTextField.setEnabled(false);
+        sizeComboBox.setEnabled(false);
+        idComboBox.setEnabled(true);
+       
+    }//GEN-LAST:event_consultRadioButtonActionPerformed
+private boolean comparar(String cadena){
+     Object [] lista = idComboBox.getComponents();
+     boolean encontrado=false;
+        for (Object object : lista) {
+            if(cadena.equals(object)){
+                encontrado = true;
+              break;
+            }
+
+        }
+       return encontrado;
+    }
+public void buscarProductos(String nombre) {
+        String datos[] = operacion.buscarProveedores(nombre);
+
+        if (datos[0] != null) {
+            idComboBox.getEditor().setItem(datos[0]);
+            descriptionTextArea.setText(datos[1]);
+            amountTextField.setText(datos[2]);
+            sizeComboBox.getEditor().setItem(datos[3]);
+
+        } else {
+
+            JOptionPane.showMessageDialog(rootPane, "No se encontro ningun archivo", "Error", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    private void amountTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_amountTextFieldKeyTyped
         // TODO add your handling code here:
-    }//GEN-LAST:event_jToggleButton1ActionPerformed
+        char letterValidation = evt.getKeyChar();
+        int aguita = (int)evt.getKeyChar();
+        if(Character.isLetter(letterValidation)){
+            getToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null,"No puedes introducir letras","¡Error!",JOptionPane.ERROR_MESSAGE);
+        }
+        else if(amountTextField.getText().length() == 3) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null,"Longitud de caracteres máxima alcanzda","¡Error!",JOptionPane.ERROR_MESSAGE);
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+        }
+        else if(aguita == 32 || aguita == 46){
+            evt.consume();
+            JOptionPane.showMessageDialog(null,"No puedes introducor espacios o puntos en este campo","¡Alerta!",JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_amountTextFieldKeyTyped
 
-        jTextField1.setEditable(true);
-        jTextField1.setBackground(Color.WHITE);
+    private void cancelButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancelButtonMouseClicked
+        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(null,"Regresando...","¡Alerta!",JOptionPane.INFORMATION_MESSAGE);
+        InterfazAdministrador goBack = new InterfazAdministrador();
+        goBack.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_cancelButtonMouseClicked
 
-        jLabel1.setEnabled(true);
-        jTextField1.setEnabled(true);
-        jLabel3.setEnabled(true);
-        jTextField2.setEnabled(true);
-        jLabel3.setEnabled(true);
-        jTextField3.setEnabled(true);        
-        jComboBox1.setEnabled(true);
-
-        jRadioButton2.setEnabled(false);
-        jRadioButton3.setEnabled(false);
-
-        jTextField1.setText("");
-        jTextField2.setText("");
-        jTextField3.setText("");
-
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
-
-    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
-        jTextField1.setBackground(Color.WHITE);
-        jLabel1.setEnabled(false);
-        jTextField1.setEnabled(false);
-        jLabel3.setEnabled(true);
-        jTextField2.setEnabled(true);
-        jLabel3.setEnabled(true);
-        jTextField3.setEnabled(true);       
-        jComboBox1.setEnabled(true);
-    }//GEN-LAST:event_jRadioButton2ActionPerformed
-
-    private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
-
-        jLabel1.setEnabled(true);
-        jTextField1.setEnabled(true);
-        jTextField1.setEditable(false);
-        jTextField1.setBackground(Color.RED);
-        jLabel3.setEnabled(false);
-        jTextField2.setEnabled(false);
-        jLabel3.setEnabled(false);
-        jTextField3.setEnabled(false);
-        jComboBox1.setEnabled(false);
-    }//GEN-LAST:event_jRadioButton3ActionPerformed
-
-    private void jRadioButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton4ActionPerformed
-        jTextField1.setEditable(true);
-        jTextField1.setBackground(Color.WHITE);
-        jLabel1.setEnabled(true);
-        jTextField1.setEnabled(true);
-        jLabel3.setEnabled(false);
-        jTextField2.setEnabled(false);
-        jLabel3.setEnabled(false);
-        jTextField3.setEnabled(false);
-        jComboBox1.setEnabled(false);
-    }//GEN-LAST:event_jRadioButton4ActionPerformed
-
-    private void jToggleButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton1MouseClicked
+    private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+        // TODO add your handling code here:
         try
         {
             conexion = Conexion.realizarConexion();
 
-            if(jRadioButton1.isSelected())
+            if(addRadioButton.isSelected())
             {
-                if(AdministrarUsuarios.validadorNombresAgregar()==true)
-                {
-                    pre=conexion.prepareStatement("{call insertNewProduct(?,?,?,?)}");
+                
+                
+                    pre = conexion.prepareStatement("{call newProducts3(?,?,?,?)}");
 
-                    pre.setString(1,jTextField1.getText());
-                    pre.setString(2,jTextField3.getText());
-                    pre.setString(3,String.valueOf(jComboBox1.getSelectedItem()));
+                    pre.setString(1,idComboBox.getEditor().getItem().toString());
+                    pre.setString(2,descriptionTextArea.getText());
+                    pre.setString(3,amountTextField.getText());
+                    pre.setString(4,String.valueOf(sizeComboBox.getSelectedItem()));
                     pre.executeUpdate();
-
-                    JOptionPane.showMessageDialog(null, "PRODUCTO [ "+jTextField1.getText()+" ] AGREGADO CORRECTAMENTE","Producto agregado",JOptionPane.PLAIN_MESSAGE);
-
-                    AdministrarUsuarios.fieldCleaner();
-                }
+                    JOptionPane.showMessageDialog(null, "El producto  "+idComboBox.getEditor().getItem().toString()+"  ha sido agregado correctamente a la base de datos","¡Felicitaciones!",JOptionPane.INFORMATION_MESSAGE);
+                    //AdministrarUsuarios.fieldCleaner();
+                    idComboBox.getEditor().setItem("");
+                    descriptionTextArea.setText("");
+                    amountTextField.setText("");
+                
+                
 
             }
-            else if(jRadioButton2.isSelected())
+            else if(modifyRadioButton.isSelected())
             {
-                pre=conexion.prepareStatement("{call modifyProducto(?,?,?,?)}");
+                pre = conexion.prepareStatement("{call modifyProducts3(?,?,?,?)}");
 
-                pre.setString(1,jTextField1.getText());
-                pre.setString(2,jTextField3.getText());
-                pre.setString(3,String.valueOf(jComboBox1.getSelectedItem()));
+                pre.setString(1,idComboBox.getEditor().getItem().toString());
+                pre.setString(2,descriptionTextArea.getText());
+                pre.setString(3,amountTextField.getText());
+                pre.setString(4,String.valueOf(sizeComboBox.getSelectedItem()));
+                pre.executeUpdate();
+                idComboBox.getEditor().setItem("");
+                descriptionTextArea.setText("");
+                amountTextField.setText("");
+                sizeComboBox.getEditor().setItem("---");
+                JOptionPane.showMessageDialog(null, "Los datos del producto "+idComboBox.getEditor().getItem().toString()+"  se han modificado correctamente","¡Felicidades!",JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            else if(eraseRadioButton.isSelected())
+            {
+                pre=conexion.prepareStatement("{call deleteProduct3(?)}");
+                pre.setString(1,idComboBox.getEditor().getItem().toString());
                 pre.executeUpdate();
 
-                JOptionPane.showMessageDialog(null, "DATOS DEL PRODUCTO ["+jTextField1.getText()+" ] MODIFICADOS CORRECTAMENTE","Producto modificado",JOptionPane.PLAIN_MESSAGE);
-            }
+                modifyRadioButton.setEnabled(false);
+                eraseRadioButton.setEnabled(false);
+                consultRadioButton.setSelected(true);
 
-            else if(jRadioButton3.isSelected())
-            {
-                pre=conexion.prepareStatement("{call deleteProduct(?)}");
-                pre.setString(1,jTextField1.getText());
-                pre.executeUpdate();
-
-                jRadioButton2.setEnabled(false);
-                jRadioButton3.setEnabled(false);
-                jRadioButton4.setSelected(true);
-
-                JOptionPane.showMessageDialog(null, "PRODUCTO ["+jTextField1.getText()+" ] ELIMINADO CORRECTAMENTE","Producto eliminado",JOptionPane.PLAIN_MESSAGE);
-
-                jTextField1.setBackground(Color.WHITE);
-                jTextField1.setEditable(true);
-                AdministrarUsuarios.fieldCleaner();
+                JOptionPane.showMessageDialog(null, "El producto "+idComboBox.getEditor().getItem().toString()+"  ha sido eliminado correctamente ","¡Felicidaddes!",JOptionPane.INFORMATION_MESSAGE);
+                idComboBox.getEditor().setItem("");
+                descriptionTextArea.setText("");
+                amountTextField.setText("");
+                sizeComboBox.getEditor().setItem("---");
+                idComboBox.setEditable(true);
 
             }
 
-            else if(jRadioButton4.isSelected())
+            else if(consultRadioButton.isSelected())
             {
 
-                res=Conexion.Consulta("execute consultProduct");
-                spaceUsed=Conexion.Consulta("execute getRowCount");
+                res=Conexion.Consulta("execute consultProducts3");
+                spaceUsed=Conexion.Consulta("execute getProductosCountrows3");
 
                 try
                 {
@@ -379,26 +566,30 @@ public class AdministrarProductos extends javax.swing.JFrame {
                     testUsers[2]=res.getString(3);  //CANTIDAD DEL PRODUCTO
                     testUsers[3]=res.getString(4);  //UNIDAD DE MEDIDA DE LA CANTIDAD DEL PRODUCTO
 
-                    if(((jTextField1.getText()).equals(testUsers[0])))
+                    if(((idComboBox.getEditor().getItem().toString()).equals(testUsers[0])))
                     {
 
-                        jRadioButton2.setEnabled(true);
-                        jRadioButton3.setEnabled(true);
-                        JOptionPane.showMessageDialog(null, "PRODUCTO ENCONTRADO \n Usted ahora puede: \n Modificar los datos del PRODUCTO \n Eliminar al PRODUCTO","PRODUCTO ENCONTRADO",JOptionPane.PLAIN_MESSAGE);
-                        jTextField3.setText(testUsers[1]);
-                        if(testUsers[3].equals("Kilos"))
+                        modifyRadioButton.setEnabled(true);
+                        eraseRadioButton.setEnabled(true);
+                        sizeComboBox.getEditor().setItem("---");
+                        JOptionPane.showMessageDialog(null, "El producto ha sido encontrado \n Usted ahora puede: \n Modificar los datos del producto \n Eliminar el producto","¡Aviso!",JOptionPane.INFORMATION_MESSAGE);
+                        idComboBox.getEditor().setItem(testUsers[0]);
+                        descriptionTextArea.setText(testUsers[1]);
+                        amountTextField.setText(testUsers[2]);
+                        sizeComboBox.getEditor().setItem(testUsers[3]);
+                        /*if(testUsers[3].equals("Kilos"))
                         {
-                            jComboBox1.setSelectedIndex(1);
+                            sizeComboBox.setSelectedIndex(1);
                         }
                         else
                         {
-                            jComboBox1.setSelectedIndex(0);
-                        }
+                            sizeComboBox.setSelectedIndex(0);
+                        }*/
                         break;
                     }
-                    else if(tableSizeComparator>tableSize)
+                    else if(tableSizeComparator==tableSize-1)
                     {
-                        JOptionPane.showMessageDialog(null, "PRODUCTO NO ENCONTRADO","PRODUCTO NO ENCONTRADO",JOptionPane.PLAIN_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "El producto no se encuentra","¡Error!",JOptionPane.ERROR_MESSAGE);
                         break;
                     }
                     tableSizeComparator++;
@@ -407,7 +598,29 @@ public class AdministrarProductos extends javax.swing.JFrame {
         }
         catch (SQLException e)
         {JOptionPane.showMessageDialog(null,e.getMessage());}
-    }//GEN-LAST:event_jToggleButton1MouseClicked
+    }//GEN-LAST:event_acceptButtonActionPerformed
+
+    private void acceptButtonKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_acceptButtonKeyTyped
+        // TODO add your handling code here:
+        
+        
+    }//GEN-LAST:event_acceptButtonKeyTyped
+
+    private void descriptionTextAreaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionTextAreaKeyTyped
+        // TODO add your handling code here:
+        int number = (int)evt.getKeyChar();
+        char agua = evt.getKeyChar();
+        if(descriptionTextArea.getText().length() == 35){
+            evt.consume();
+            JOptionPane.showMessageDialog(null,"Longitud de caracteres máxima alcanzada en el renglón","¡Alerta!",JOptionPane.INFORMATION_MESSAGE);
+        }
+        else if(Character.isDigit(agua)){
+            getToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null,"No puedes introducir números en este campo","¡Alerta!",JOptionPane.INFORMATION_MESSAGE);
+        }
+        
+    }//GEN-LAST:event_descriptionTextAreaKeyTyped
 
     /**
      * @param args the command line arguments
@@ -446,21 +659,25 @@ public class AdministrarProductos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton acceptButton;
+    private static javax.swing.JRadioButton addRadioButton;
+    private javax.swing.JLabel amountLabel;
+    private javax.swing.JTextField amountTextField;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.JButton cancelButton;
+    private static javax.swing.JRadioButton consultRadioButton;
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JTextArea descriptionTextArea;
+    private static javax.swing.JRadioButton eraseRadioButton;
+    private javax.swing.JComboBox<String> idComboBox;
+    private javax.swing.JLabel idLabel;
     private javax.swing.JPanel jPanel1;
-    private static javax.swing.JRadioButton jRadioButton1;
-    private static javax.swing.JRadioButton jRadioButton2;
-    private static javax.swing.JRadioButton jRadioButton3;
-    private static javax.swing.JRadioButton jRadioButton4;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel logoCrepas;
+    private javax.swing.JLabel logoLabel;
+    private javax.swing.JLabel logoProductos;
+    private static javax.swing.JRadioButton modifyRadioButton;
+    private javax.swing.JComboBox<String> sizeComboBox;
     // End of variables declaration//GEN-END:variables
 }
