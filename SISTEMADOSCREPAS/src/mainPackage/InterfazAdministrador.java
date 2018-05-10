@@ -167,7 +167,12 @@ public class InterfazAdministrador extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         JOptionPane.showMessageDialog(null, "abriendo facturas...","¡Aviso!",JOptionPane.INFORMATION_MESSAGE);/*+String.valueOf(jComboBox1.getSelectedItem())+"es","",JOptionPane.PLAIN_MESSAGE);*/
-        GenerarReportes fact  = new GenerarReportes();
+        GenerarReportes fact = null;
+        try {
+            fact = new GenerarReportes();
+        } catch (Exception ex) {
+            Logger.getLogger(InterfazAdministrador.class.getName()).log(Level.SEVERE, null, ex);
+        }
         fact.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton5ActionPerformed

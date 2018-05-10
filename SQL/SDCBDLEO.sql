@@ -338,7 +338,7 @@ END
 GO
 
 
-SELECT SUM(Costo_Pedido) FROM Pedidos WHERE Fecha_Pedido='2018-05-08'
+SELECT SUM(Costo_Pedido) FROM Pedidos WHERE Fecha_Pedido='2018-05-09'
 select * from Crepas where Id_Pedido='5'
 actualizarPedidos 3
 

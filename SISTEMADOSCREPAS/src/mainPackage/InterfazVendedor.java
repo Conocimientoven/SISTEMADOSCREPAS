@@ -345,14 +345,14 @@ public class InterfazVendedor extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Crepa", "Ingredientes", "Lugar", "Adorno"
+                "Crepa", "Ingredientes", "Lugar", "Adorno", "Costo"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -374,6 +374,7 @@ public class InterfazVendedor extends javax.swing.JFrame {
             jTable2.getColumnModel().getColumn(1).setResizable(false);
             jTable2.getColumnModel().getColumn(2).setResizable(false);
             jTable2.getColumnModel().getColumn(3).setResizable(false);
+            jTable2.getColumnModel().getColumn(4).setResizable(false);
         }
 
         jLabel9.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
@@ -1019,7 +1020,7 @@ public class InterfazVendedor extends javax.swing.JFrame {
            }
            
            
-            String totalConsult[][]=new String[tableSize][4];
+            String totalConsult[][]=new String[tableSize][5];
             
             while(res2.next())
             {
@@ -1028,13 +1029,14 @@ public class InterfazVendedor extends javax.swing.JFrame {
                 totalConsult[tableSizeComparator][1]=(res2.getString(4));
                 totalConsult[tableSizeComparator][2]=(res2.getString(6));
                 totalConsult[tableSizeComparator][3]=(res2.getString(5));
+                totalConsult[tableSizeComparator][4]=(res2.getString(2));
                 //System.out.println(totalConsult[tableSizeComparator]);
                 
                 tableSizeComparator++;
             }
             for(int f=0;f<totalConsult.length;f++)
             {
-                model.addRow(new Object[]{totalConsult[f][0], totalConsult[f][1], totalConsult[f][2],totalConsult[f][3]});
+                model.addRow(new Object[]{totalConsult[f][0], totalConsult[f][1], totalConsult[f][2],totalConsult[f][3],totalConsult[f][4]});
             }
             
         }

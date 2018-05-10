@@ -5,29 +5,28 @@
  */
 package mainPackage;
 
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.parser.Path;
-import com.itextpdf.text.pdf.parser.clipper.Paths;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import static mainPackage.IngresarAlSistema.conexion;
 /**
@@ -47,6 +46,19 @@ public class GenerarReportes extends javax.swing.JFrame {
      */
     public GenerarReportes() {
         initComponents();
+        
+        Date date = new Date();
+        Calendar calendar = Calendar.getInstance();
+
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+        int currentDate= Calendar.getInstance().get(Calendar.DATE);
+
+        calendar.set(currentYear, currentMonth , currentDate);
+        date.setTime(calendar.getTimeInMillis());
+
+        jDateChooser1.setDate(date);
+        jDateChooser1.setDate(date);
     }
 
     /**
@@ -59,12 +71,6 @@ public class GenerarReportes extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jComboBox3 = new javax.swing.JComboBox<>();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -72,26 +78,11 @@ public class GenerarReportes extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jButton5 = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        jDateChooser2 = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jComboBox1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" }));
-
-        jComboBox2.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" }));
-
-        jComboBox3.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2018", "2019", "2020", "2021", "2022", "2023", "2024" }));
-
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
-        jLabel1.setText("Día:");
-
-        jLabel2.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
-        jLabel2.setText("Mes:");
-
-        jLabel3.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
-        jLabel3.setText("Año:");
 
         jButton1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jButton1.setText("Generar PDF");
@@ -158,6 +149,25 @@ public class GenerarReportes extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 376, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        jDateChooser1.setDateFormatString("YYYY-MM-dd");
+        jDateChooser1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jDateChooser1.setMinSelectableDate(new java.util.Date(1525154516000L));
+
+        jDateChooser2.setDateFormatString("YYYY-MM-dd");
+        jDateChooser2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jDateChooser2.setMinSelectableDate(new java.util.Date(1525154516000L));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -165,57 +175,48 @@ public class GenerarReportes extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(315, 315, 315)
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(61, 61, 61)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 783, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(132, 132, 132)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(147, 147, 147)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 783, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(18, 18, 18)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(34, 34, 34)
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(43, 43, 43)
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
-                                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(443, Short.MAX_VALUE))
+                                .addGap(315, 315, 315)
+                                .addComponent(jLabel4))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(114, 114, 114)
+                                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(38, 38, 38)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)))
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                    .addComponent(jDateChooser1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jDateChooser2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(40, 40, 40)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -262,27 +263,13 @@ public class GenerarReportes extends javax.swing.JFrame {
             conexion = Conexion.realizarConexion();
             res = Conexion.Consulta("SELECT COUNT(*) FROM Pedidos WITH (NOLOCK)");
             
-            if((jComboBox2.getSelectedIndex()+1)<10)
-            {
-                mes+="0";
-                mes+=(jComboBox2.getSelectedIndex()+1)+"";
-            }
-            else
-            {
-                mes=(jComboBox2.getSelectedIndex()+1)+"";
-            }
-            if((jComboBox1.getSelectedIndex()+1)<10)
-            {
-                day+="0";
-                day+=(jComboBox1.getSelectedIndex()+1)+"";
-            }
-            else
-            {
-                day=(jComboBox1.getSelectedIndex()+1)+"";
-            }
             
-            
-            res2=Conexion.Consulta("SELECT Id_Pedido,Costo_Pedido FROM Pedidos WHERE Fecha_Pedido='"+(String.valueOf(jComboBox3.getSelectedItem()))+"-"+mes+"-"+day+"'");
+           //System.out.println(((JTextField)jDateChooser1.getDateEditor().getUiComponent()).getText());
+           //System.out.println(((JTextField)jDateChooser2.getDateEditor().getUiComponent()).getText());
+           
+            res2=Conexion.Consulta("SELECT Id_Pedido,Costo_Pedido FROM Pedidos "
+                    + "WHERE (Fecha_Pedido>='"+(((JTextField)jDateChooser1.getDateEditor().getUiComponent()).getText())+"' "
+                            + "AND Fecha_Pedido<='"+(((JTextField)jDateChooser2.getDateEditor().getUiComponent()).getText())+"')");
                        
            
            while (res.next())
@@ -305,18 +292,17 @@ public class GenerarReportes extends javax.swing.JFrame {
                 model.addRow(new Object[]{totalConsult[f][0], totalConsult[f][1]});
             }
             
-            mes="";
             
             
-            res3=Conexion.Consulta("SELECT SUM(Costo_Pedido) FROM Pedidos WHERE Fecha_Pedido='"+(String.valueOf(jComboBox3.getSelectedItem()))+"-"+mes+"-"+day+"'");
+            
+            res3=Conexion.Consulta("SELECT SUM(Costo_Pedido) FROM Pedidos "
+                    + "WHERE (Fecha_Pedido>='"+(((JTextField)jDateChooser1.getDateEditor().getUiComponent()).getText())+"' "
+                            + "AND Fecha_Pedido<='"+(((JTextField)jDateChooser2.getDateEditor().getUiComponent()).getText())+"')");
             
             while(res3.next())
             {
                jTextField1.setText(res3.getInt(1)+"");
             }
-            
-            
-            
         }
         catch (SQLException e)
         {JOptionPane.showMessageDialog(null,e.getMessage());} 
@@ -326,7 +312,7 @@ public class GenerarReportes extends javax.swing.JFrame {
     
     private void addTableHeader(PdfPTable table) 
     {
-    Stream.of("Pedido", "Costo")
+    Stream.of("Número del pedido", "Costo total del pedido")
       .forEach(columnTitle -> {
         PdfPCell header = new PdfPCell();
         header.setBackgroundColor(BaseColor.LIGHT_GRAY);
@@ -335,13 +321,6 @@ public class GenerarReportes extends javax.swing.JFrame {
         table.addCell(header);
     });
     }
-    private void addRows(PdfPTable table) 
-    {
-        table.addCell("ORA");
-        table.addCell("PERRO");
-    }
-    
-    
     
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
@@ -355,10 +334,21 @@ public class GenerarReportes extends javax.swing.JFrame {
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
+         
+        
+        
+        
+        //PARA LA RUTA
+        
+        
+        
+        //FIN PARA LA RUTA
+        
+        
         
         Document document = new Document();
         try {
-        PdfWriter.getInstance(document, new FileOutputStream("REPORTEVENTAS"+""+(String.valueOf(jComboBox3.getSelectedItem()))+(String.valueOf(jComboBox2.getSelectedItem()))+(String.valueOf(jComboBox1.getSelectedItem()))+".pdf"));
+        PdfWriter.getInstance(document, new FileOutputStream("REPORTEVENTAS"+""+(((JTextField)jDateChooser1.getDateEditor().getUiComponent()).getText())+".pdf"));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(GenerarReportes.class.getName()).log(Level.SEVERE, null, ex);
         } catch (DocumentException ex) {
@@ -373,28 +363,10 @@ public class GenerarReportes extends javax.swing.JFrame {
         {
             conexion = Conexion.realizarConexion();
             res = Conexion.Consulta("SELECT COUNT(*) FROM Pedidos WITH (NOLOCK)");
-            String mes="",day="";
-            if((jComboBox2.getSelectedIndex()+1)<10)
-            {
-                mes+="0";
-                mes+=(jComboBox2.getSelectedIndex()+1)+"";
-            }
-            else
-            {
-                mes=(jComboBox2.getSelectedIndex()+1)+"";
-            }
-            if((jComboBox1.getSelectedIndex()+1)<10)
-            {
-                day+="0";
-                day+=(jComboBox1.getSelectedIndex()+1)+"";
-            }
-            else
-            {
-                day=(jComboBox1.getSelectedIndex()+1)+"";
-            }
             
-            
-            res2=Conexion.Consulta("SELECT Id_Pedido,Costo_Pedido FROM Pedidos WHERE Fecha_Pedido='"+(String.valueOf(jComboBox3.getSelectedItem()))+"-"+mes+"-"+day+"'");
+            res2=Conexion.Consulta("SELECT Id_Pedido,Costo_Pedido FROM Pedidos "
+                    + "WHERE (Fecha_Pedido>='"+(((JTextField)jDateChooser1.getDateEditor().getUiComponent()).getText())+"' "
+                            + "AND Fecha_Pedido<='"+(((JTextField)jDateChooser2.getDateEditor().getUiComponent()).getText())+"')");
                        
            
            while (res.next())
@@ -421,12 +393,14 @@ public class GenerarReportes extends javax.swing.JFrame {
             mes="";
             
             
-            res3=Conexion.Consulta("SELECT SUM(Costo_Pedido) FROM Pedidos WHERE Fecha_Pedido='"+(String.valueOf(jComboBox3.getSelectedItem()))+"-"+mes+"-"+day+"'");
+            res3=Conexion.Consulta("SELECT SUM(Costo_Pedido) FROM Pedidos "
+                    + "WHERE (Fecha_Pedido>='"+(((JTextField)jDateChooser1.getDateEditor().getUiComponent()).getText())+"' "
+                            + "AND Fecha_Pedido<='"+(((JTextField)jDateChooser2.getDateEditor().getUiComponent()).getText())+"')");
             
             while(res3.next())
             {
                 table.addCell("VENTA TOTAL DEL DÍA");
-                table.addCell(res3.getInt(1)+"");
+                table.addCell(jTextField1.getText());
             }            
         }
         catch (SQLException e)
@@ -483,17 +457,12 @@ public class GenerarReportes extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private static javax.swing.JComboBox<String> jComboBox1;
-    private static javax.swing.JComboBox<String> jComboBox2;
-    private static javax.swing.JComboBox<String> jComboBox3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    public static com.toedter.calendar.JDateChooser jDateChooser1;
+    public static com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private static javax.swing.JTable jTable1;
     private static javax.swing.JTextField jTextField1;

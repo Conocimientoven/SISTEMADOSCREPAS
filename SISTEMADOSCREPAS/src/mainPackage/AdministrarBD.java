@@ -8,6 +8,7 @@ package mainPackage;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -199,19 +200,25 @@ public class AdministrarBD extends javax.swing.JFrame {
         {
            try {writer.close();} catch (Exception ex) {/*ignore*/}
         }
-       
+        
+        
+        conexion = Conexion.realizarConexionMaster();
         try 
         {
-            conexion = Conexion.realizarConexionMaster();
-            pre=conexion.prepareStatement("{call backupDatabase(?)}");
-            System.out.println(jTextField1.getText()+"");
-            pre.setString(1,jTextField1.getText()+"");
-            pre.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Base de datos respaldada","",JOptionPane.PLAIN_MESSAGE);  
-        } 
-        catch (SQLException ex) {
+            
+            File f = new File((jTextField1.getText()));
+            if(f.exists() && !f.isDirectory()) 
+            { 
+                 f.delete();
+            }
+            pre=conexion.prepareStatement("BACKUP DATABASE SDCDB TO DISK = '"+(jTextField1.getText())+"'");
+            pre.execute();
+                
+        } catch (SQLException ex) {
             Logger.getLogger(AdministrarBD.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //  System.out.println(jTextField1.getText()+"");
+        JOptionPane.showMessageDialog(null, "Base de datos respaldada","",JOptionPane.PLAIN_MESSAGE);
         
     }//GEN-LAST:event_jButton1MouseClicked
 
@@ -236,9 +243,8 @@ public class AdministrarBD extends javax.swing.JFrame {
         try
         {
             conexion = Conexion.realizarConexionMaster();
-            pre=conexion.prepareStatement("{call restoreDatabase(?)}");
-            pre.setString(1,(jTextField2.getText()));
-            pre.executeUpdate();
+            pre=conexion.prepareStatement("RESTORE DATABASE SDCDB FROM DISK = '"+(jTextField2.getText())+"' WITH REPLACE");
+            pre.execute();
             JOptionPane.showMessageDialog(null, "Base de datos restaurada","",JOptionPane.PLAIN_MESSAGE);
         }
         catch (SQLException e)
