@@ -112,5 +112,45 @@ public class Operaciones {
         }
         return datos;
     }
+    
+    public DefaultComboBoxModel getListaProductos(String cadenaEscrita){
+
+        DefaultComboBoxModel modelo = new DefaultComboBoxModel();
+        try { 
+            res = (ResultSet) conexion.Consulta("SELECT Id_Producto FROM Productos WHERE Id_Producto LIKE '["+cadenaEscrita+"]%'");
+            
+            while (res.next()) {
+                modelo.addElement(res.getString("Id_Producto"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Operaciones.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+     return modelo;
+
+    }
+    
+    public String[] buscarProductos(String nombre){
+
+        String[] datos = new String[4];
+        try {
+             
+            String query = "SELECT Id_Producto FROM Productos WHERE Id_Producto LIKE '["+nombre+"]%'";
+            conexion = (Conexion) Conexion.realizarConexion();
+            res = (ResultSet) conexion.Consulta(query);
+            while (res.next()) {
+               
+                datos [0] = res.getString(1);
+                datos [1] = res.getString(2);
+                datos [2] = res.getString(3);
+                datos [3] = res.getString(4);
+                
+                
+            }
+        } catch (SQLException ex) {
+            return null;
+        }
+        return datos;
+    }
 
 }
