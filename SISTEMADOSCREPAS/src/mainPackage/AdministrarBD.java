@@ -13,7 +13,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,7 +23,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import static mainPackage.IngresarAlSistema.conexion;
 
 /**
  *
@@ -29,6 +30,8 @@ import static mainPackage.IngresarAlSistema.conexion;
  */
 public class AdministrarBD extends javax.swing.JFrame {
     static PreparedStatement pre;
+    static Connection conexion;
+    static ResultSet res;
     
     /**
      * Creates new form generarReportes
@@ -196,18 +199,19 @@ public class AdministrarBD extends javax.swing.JFrame {
         {
            try {writer.close();} catch (Exception ex) {/*ignore*/}
         }
-        
-        
-        try
+       
+        try 
         {
-            conexion = Conexion.realizarConexion();
+            conexion = Conexion.realizarConexionMaster();
             pre=conexion.prepareStatement("{call backupDatabase(?)}");
-            pre.setString(1,jTextField1.getText());
-            
-            JOptionPane.showMessageDialog(null, "Base de datos respaldada","",JOptionPane.PLAIN_MESSAGE);
+            System.out.println(jTextField1.getText()+"");
+            pre.setString(1,jTextField1.getText()+"");
+            pre.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Base de datos respaldada","",JOptionPane.PLAIN_MESSAGE);  
+        } 
+        catch (SQLException ex) {
+            Logger.getLogger(AdministrarBD.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch (SQLException e)
-        {JOptionPane.showMessageDialog(null, "ERROR"+e.getMessage());}  
         
     }//GEN-LAST:event_jButton1MouseClicked
 
@@ -231,9 +235,10 @@ public class AdministrarBD extends javax.swing.JFrame {
         
         try
         {
-            conexion = Conexion.realizarConexion();
+            conexion = Conexion.realizarConexionMaster();
             pre=conexion.prepareStatement("{call restoreDatabase(?)}");
             pre.setString(1,(jTextField2.getText()));
+            pre.executeUpdate();
             JOptionPane.showMessageDialog(null, "Base de datos restaurada","",JOptionPane.PLAIN_MESSAGE);
         }
         catch (SQLException e)
@@ -257,7 +262,7 @@ public class AdministrarBD extends javax.swing.JFrame {
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fc.setAcceptAllFileFilterUsed(false);
         if(fc.showOpenDialog(this)==JFileChooser.APPROVE_OPTION)
-        {jTextField1.setText((fc.getSelectedFile().toString())+('\\')+"SDCDB.bak");}
+        {jTextField1.setText((fc.getSelectedFile().toString())+('\\')+"SDCDB.BAK");}
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
