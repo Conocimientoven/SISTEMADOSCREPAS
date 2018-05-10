@@ -36,7 +36,6 @@ public class AdministrarProveedores extends javax.swing.JFrame {
     static ResultSet res, spaceUsed;
     static String testProviders[] = new String[9];
     static String testProvidersPostalCode[] = new String[4];
-    static String arrayComparator[] =  new String[arrayColony];
     
     
     public static Connection realizarConexion()
@@ -536,7 +535,6 @@ public class AdministrarProveedores extends javax.swing.JFrame {
                     .addComponent(consultRadioButton))
                 .addGap(6, 6, 6)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ProveedoresLayout.createSequentialGroup()
                         .addGap(12, 12, 12)
@@ -565,10 +563,11 @@ public class AdministrarProveedores extends javax.swing.JFrame {
                             .addGroup(ProveedoresLayout.createSequentialGroup()
                                 .addComponent(telephoneTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(cpLabel)
+                                .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(cpTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(setButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(cpLabel)
+                                        .addComponent(setButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(streetLabel1)
@@ -1113,17 +1112,7 @@ public class AdministrarProveedores extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, "Proveedor: " +nameComboBox.getEditor().getItem().toString() +"Agregado correctamente a la base de datos ","¡Felicitaciones!",JOptionPane.PLAIN_MESSAGE);
         cleanTextFields();
         municipalityTextField.setText("");
-        
-         for(int i = 0; i < arrayComparator.length; i ++){
-                          // System.out.println(arrayColony[i]);
-                          if(acceptButton.isSelected()){
-                              calisComboBox.removeItemAt(i);
-                          }
-                          else {
-                          calisComboBox.addItem(i);   
-                          }
-         }
-        
+
         
         
         }

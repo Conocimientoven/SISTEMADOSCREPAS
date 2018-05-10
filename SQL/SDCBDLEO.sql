@@ -192,7 +192,7 @@ GO
 
 DROP DATABASE SDCDB
 
-RESTORE DATABASE SDCDB FROM DISK = 'C:\Users\Success\Desktop\SDCDB.BAK'
+RESTORE DATABASE SDCDB FROM DISK = 'C:\Users\Success\Documents\GitHub\SISTEMADOSCREPAS\BASE DE DATOSSDCDB.BAK'
 RESTORE DATABASE SDCDB FROM DISK = 'C:\BACKUPS\SDCDB.BAK'
 execute restoreDatabase 'C:\Users\Success\Desktop\SDCDB.bak' 
 -----------------------------------------------------------

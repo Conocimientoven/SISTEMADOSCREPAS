@@ -184,19 +184,8 @@ public class InterfazAdministrador extends javax.swing.JFrame {
 
     private void reportsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportsButtonActionPerformed
         // TODO add your handling code here:
-        
-<<<<<<< HEAD
-        JOptionPane.showMessageDialog(null, "abriendo facturas...","¡Aviso!",JOptionPane.INFORMATION_MESSAGE);/*+String.valueOf(jComboBox1.getSelectedItem())+"es","",JOptionPane.PLAIN_MESSAGE);*/
-        GenerarReportes fact = null;
-        try {
-            fact = new GenerarReportes();
-        } catch (Exception ex) {
-            Logger.getLogger(InterfazAdministrador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-=======
         JOptionPane.showMessageDialog(null, "La interfaz reportes está cargando...","¡Aviso!",JOptionPane.INFORMATION_MESSAGE);/*+String.valueOf(jComboBox1.getSelectedItem())+"es","",JOptionPane.PLAIN_MESSAGE);*/
         GenerarReportes fact  = new GenerarReportes();
->>>>>>> abb82d127b964ef634e4e474486249300cbf1524
         fact.setVisible(true);
         dispose();
     }//GEN-LAST:event_reportsButtonActionPerformed
