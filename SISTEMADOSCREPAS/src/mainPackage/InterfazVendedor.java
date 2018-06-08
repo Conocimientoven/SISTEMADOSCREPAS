@@ -283,6 +283,11 @@ public class InterfazVendedor extends javax.swing.JFrame {
 
         jButton2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jButton2.setText("Terminar sesión");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
 
         jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
@@ -887,6 +892,16 @@ public class InterfazVendedor extends javax.swing.JFrame {
     private void jToggleButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton4ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jToggleButton4ActionPerformed
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        // TODO add your handling code here:
+        
+        
+        IngresarAlSistema mainPage = new IngresarAlSistema();
+        mainPage.setVisible(true);
+        dispose();
+        JOptionPane.showMessageDialog(null, "Sesión finalizada","Sesión finalizada",JOptionPane.PLAIN_MESSAGE);
+    }//GEN-LAST:event_jButton2MouseClicked
     
     public static void actualizarPedidos()
     {

@@ -44,8 +44,6 @@ public class InterfazAdministrador extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(92, 100, 90));
-
         usersButton.setText("Administrar usuarios");
         usersButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -184,7 +182,6 @@ public class InterfazAdministrador extends javax.swing.JFrame {
 
     private void reportsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportsButtonActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(null, "La interfaz reportes está cargando...","¡Aviso!",JOptionPane.INFORMATION_MESSAGE);/*+String.valueOf(jComboBox1.getSelectedItem())+"es","",JOptionPane.PLAIN_MESSAGE);*/
         GenerarReportes fact  = new GenerarReportes();
         fact.setVisible(true);
         dispose();
@@ -192,7 +189,6 @@ public class InterfazAdministrador extends javax.swing.JFrame {
 
     private void providersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_providersButtonActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(null, "La interfaz proveedores está cargando...","¡Aviso!",JOptionPane.INFORMATION_MESSAGE);/*+String.valueOf(jComboBox1.getSelectedItem())+"es","",JOptionPane.PLAIN_MESSAGE);*/
         AdministrarProveedores providers = new AdministrarProveedores();
         providers.setVisible(true);
         dispose();

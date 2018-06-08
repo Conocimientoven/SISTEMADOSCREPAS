@@ -10,10 +10,6 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import static mainPackage.AdministrarProveedores.pre;
-import static mainPackage.AdministrarProveedores.res;
-import static mainPackage.AdministrarProveedores.testProviders;
-import static mainPackage.IngresarAlSistema.conexion;
 
 /**
  *

@@ -53,9 +53,6 @@
   <SubComponents>
     <Container class="javax.swing.JPanel" name="Proveedores">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="5a" green="64" red="5c" type="rgb"/>
-        </Property>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[1000, 1000]"/>
         </Property>
@@ -152,11 +149,15 @@
                               </Group>
                           </Group>
                       </Group>
-                      <Component id="lblFondo" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
-                          <Component id="addRadioButton" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
-                          <Component id="modifyRadioButton" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="addRadioButton" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
+                                  <Component id="modifyRadioButton" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="lblFondo" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -317,9 +318,6 @@
         </Component>
         <Component class="javax.swing.JRadioButton" name="addRadioButton">
           <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="5a" green="64" red="5c" type="rgb"/>
-            </Property>
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup"/>
             </Property>
@@ -334,9 +332,6 @@
         </Component>
         <Component class="javax.swing.JRadioButton" name="modifyRadioButton">
           <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="5a" green="64" red="5c" type="rgb"/>
-            </Property>
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup"/>
             </Property>
@@ -351,9 +346,6 @@
         </Component>
         <Component class="javax.swing.JRadioButton" name="consultRadioButton">
           <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="5a" green="64" red="5c" type="rgb"/>
-            </Property>
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup"/>
             </Property>
@@ -368,9 +360,6 @@
         </Component>
         <Component class="javax.swing.JRadioButton" name="eraseRadioButton">
           <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="5a" green="64" red="5c" type="rgb"/>
-            </Property>
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup"/>
             </Property>
@@ -509,8 +498,18 @@
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lblFondo">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mainPackage/DosCreepauxCutted.png"/>
+            </Property>
+          </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblFondito">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mainPackage/pro.jpg"/>
+            </Property>
+          </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="nameComboBox">
           <Properties>
@@ -531,9 +530,6 @@
         </Component>
         <Component class="javax.swing.JRadioButton" name="idRadioButton">
           <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="5a" green="64" red="5c" type="rgb"/>
-            </Property>
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup1"/>
             </Property>
@@ -548,9 +544,6 @@
         </Component>
         <Component class="javax.swing.JRadioButton" name="nameRadioButton">
           <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="5a" green="64" red="5c" type="rgb"/>
-            </Property>
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup1"/>
             </Property>

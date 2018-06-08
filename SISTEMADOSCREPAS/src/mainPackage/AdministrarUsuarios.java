@@ -131,6 +131,7 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
         jRadioButton6 = new javax.swing.JRadioButton();
         jRadioButton7 = new javax.swing.JRadioButton();
         jComboBox2 = new javax.swing.JComboBox<>();
+        logoCrepas = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -148,11 +149,6 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
 
         jTextField1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jTextField1.setToolTipText("");
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
         jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 jTextField1KeyTyped(evt);
@@ -177,11 +173,6 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
         jToggleButton4.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jToggleButton4MouseClicked(evt);
-            }
-        });
-        jToggleButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton4ActionPerformed(evt);
             }
         });
 
@@ -249,6 +240,11 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
         });
 
         jComboBox2.setEditable(true);
+        jComboBox2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jComboBox2KeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -259,7 +255,9 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGap(21, 21, 21)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(logoCrepas, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGap(55, 55, 55)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -336,11 +334,16 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jToggleButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jToggleButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(logoCrepas, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24))))
         );
 
         jTextField1.getAccessibleContext().setAccessibleName("");
@@ -406,12 +409,20 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
         catch(SQLException e)
         {}
         
+            String comboBox2=jComboBox2.getEditor().getItem().toString();
+                    
             for(int i=0; i<(jComboBox2.getEditor().getItem().toString()).length();i++)
             {
                 if(jComboBox2.getEditor().getItem().toString().charAt(i)==49)
                 {unPunto++;}
-            }
         
+                if ((comboBox2.charAt(i)<164 && comboBox2.charAt(i)>165) && (comboBox2.charAt(i)<65 || comboBox2.charAt(i)>90) && (comboBox2.charAt(i)<97 || comboBox2.charAt(i)>122)) 
+                { 
+                  JOptionPane.showMessageDialog(null, "El nombre real del usuario sólo acepta letras, espacios, y puntos ","Caracter no válido presionado", JOptionPane.PLAIN_MESSAGE);           
+                  return false;
+                }
+            }
+
             if(jTextField1.getText().length()<5 || jTextField1.getText().length()>20)
             {
                JOptionPane.showMessageDialog(null, "El nombre de usuario tiene que ser de al "
@@ -434,6 +445,7 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
             {
                 for(int i=0;i<jComboBox2.getEditor().getItem().toString().length();i++)
                 {
+                    
                     if((jComboBox2.getEditor().getItem().toString()).indexOf("..")>0 || (jComboBox2.getEditor().getItem().toString()).indexOf("  ")>0)
                     {
                         JOptionPane.showMessageDialog(null, "El nombre de usuario no puede contener dos puntos seguidos ni dos espacios seguidos","Error en el nombre real del usuario",JOptionPane.PLAIN_MESSAGE);
@@ -467,6 +479,22 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
             }
         }catch(SQLException e)
         {}
+        
+        
+        String comboBox2=jComboBox2.getEditor().getItem().toString();
+                    
+            for(int i=0; i<(jComboBox2.getEditor().getItem().toString()).length();i++)
+            {
+                if(jComboBox2.getEditor().getItem().toString().charAt(i)==49)
+                {unPunto++;}
+        
+                 if ((comboBox2.charAt(i)<164 && comboBox2.charAt(i)>165) && (comboBox2.charAt(i)<65 || comboBox2.charAt(i)>90) && (comboBox2.charAt(i)<97 || comboBox2.charAt(i)>122))
+                { 
+                  JOptionPane.showMessageDialog(null, "El nombre real del usuario sólo acepta letras, espacios, y puntos ","Caracter no válido presionado", JOptionPane.PLAIN_MESSAGE);           
+                  return false;
+                }
+            }
+
         
             if(jComboBox2.getEditor().getItem().toString().length()<10 || jComboBox2.getEditor().getItem().toString().length()>50)
             {
@@ -804,13 +832,12 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
        jComboBox2.setEnabled(false);
     }//GEN-LAST:event_jRadioButton7ActionPerformed
 
-    private void jToggleButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jToggleButton4ActionPerformed
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    private void jComboBox2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jComboBox2KeyTyped
+       
+      
+      
+   
+    }//GEN-LAST:event_jComboBox2KeyTyped
 
     
     private boolean comparar(String cadena){
@@ -905,5 +932,6 @@ public class AdministrarUsuarios extends javax.swing.JFrame {
     private static javax.swing.JTextField jTextField1;
     private static javax.swing.JTextField jTextField3;
     private static javax.swing.JToggleButton jToggleButton4;
+    private javax.swing.JLabel logoCrepas;
     // End of variables declaration//GEN-END:variables
 }

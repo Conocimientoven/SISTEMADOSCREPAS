@@ -14,7 +14,9 @@ primary key(Id_Usuario)
 )
 
 INSERT INTO Usuarios VALUES('adminax','Aurea De La Mora','adminax','Administrador')
-INSERT INTO Usuarios VALUES('seller','Kira Yoshikage','seller','Vendedor')
+INSERT INTO Usuarios VALUES('seller','seller','seller','Vendedor')
+INSERT INTO Usuarios VALUES('admin','admin','admin','Administrador')
+
 
 SELECT * FROM Usuarios
 
@@ -24,7 +26,7 @@ drop table usuarios
 
 --OBTAINING THE ROWCOUNT PROCEDURE------------------------
 GO
-CREATE PROCEDURE getRowCount
+ALTER PROCEDURE getRowCount
 AS BEGIN
 SELECT COUNT(*) FROM Usuarios WITH (NOLOCK)
 END
@@ -36,7 +38,7 @@ execute getRowcount
 
 --OBTAINING THE ACCESS PROCEDURE---------------------------
 GO
-CREATE PROCEDURE selectionForAccess
+ALTER PROCEDURE selectionForAccess
 AS BEGIN
 SELECT Id_Usuario,Clave_Usuario, Tipo_Usuario FROM Usuarios
 END
@@ -48,42 +50,14 @@ execute selectionForAccess
 
 --NEW USER------------------------
 GO
-CREATE PROCEDURE insertNewUser @ID varchar(20), @Nombre varchar(50), @Clave varchar(30), @Tipo varchar(13)
+ALTER PROCEDURE insertNewUser @ID varchar(20), @Nombre varchar(50), @Clave varchar(30), @Tipo varchar(13)
 AS BEGIN
 INSERT INTO Usuarios VALUES(@ID,@Nombre,@Clave,@Tipo)
 END
 GO
 
 
-CREATE TRIGGER checkInsert ON Usuarios
-AFTER INSERT
-AS
-BEGIN
-SET NOCOUNT ON
-IF((SELECT Nombre_Usuario FROM INSERTED)!='' OR ((SELECT LEN(Nombre_Usuario) FROM INSERTED)<10))
-print 'Se requiere escribir un nombre de usuario de al menos 10 caracteres'
-rollback
-end
-
-
-
 INSERT INTO Usuarios VALUES('kira','rrrrrrrrr','kira','Administrador')
-
-
-
-drop trigger checkInsert
-
-create trigger checkInsertOnUnderAge on estudiantes
-after insert
-as
-begin
-set nocount on
-if((select edad from inserted)>18)
-print 'YOU CANNOT ADD THIS USER'
-rollback
-end
-
-
 
 
 
@@ -99,7 +73,7 @@ INSERT INTO Usuarios VALUES(10,'Admin','Admin','Administrador')
 
 --MODIFY USER------------------------
 GO
-CREATE PROCEDURE modifyUser @ID varchar(20), @Nombre varchar(20), @Clave varchar(30), @Tipo varchar(13)
+ALTER PROCEDURE modifyUser @ID varchar(20), @Nombre varchar(20), @Clave varchar(30), @Tipo varchar(13)
 AS BEGIN
 UPDATE Usuarios SET Nombre_Usuario=@Nombre, Clave_Usuario=@Clave, Tipo_Usuario=@Tipo where Id_Usuario=@ID
 END
@@ -192,13 +166,13 @@ GO
 
 DROP DATABASE SDCDB
 
-RESTORE DATABASE SDCDB FROM DISK = 'C:\Users\Success\Documents\GitHub\SISTEMADOSCREPAS\BASE DE DATOSSDCDB.BAK'
+RESTORE DATABASE SDCDB FROM DISK = 'C:\Users\Success\Desktop\SDCDB.BAK'
 RESTORE DATABASE SDCDB FROM DISK = 'C:\BACKUPS\SDCDB.BAK'
 execute restoreDatabase 'C:\Users\Success\Desktop\SDCDB.bak' 
 -----------------------------------------------------------
 
 
-
+select * from codigospostales
 
 
 
@@ -225,9 +199,10 @@ execute restoreDatabase 'C:\Users\Success\Desktop\SDCDB.bak'
 create table Productos
 (
 Id_Producto varchar(20),
+Id_Crepa varchar (20),
 Descrip_Producto varchar(100),
 Cantidad_Producto varchar(10),
-Unidad_Medida_Producto varchar(6),
+foreign key (Id_Crepa) references Crepas(Id_Crepa),
 primary key(Id_Producto)
 )
 drop table Productos
@@ -272,13 +247,17 @@ EXECUTE insertNewProduct('Crema de cacahuate', 'Sirve para la crepa 13', '2','Li
 create table Pedidos
 (
 Id_Pedido varchar(20),
+Id_Usuario varchar(20),
 Estado_Pago varchar(9),
 Estado_Entrega varchar(12),
 Fecha_Pedido varchar(20),
 Costo_Pedido int,
+foreign key (Id_Usuario) REFERENCES Usuarios(Id_Usuario),
 primary key(Id_Pedido)
 )
+
 drop table Pedidos
+
 
 SELECT Id_Pedido from Pedidos
 
@@ -293,13 +272,13 @@ SELECT * FROM Pedidos where (Estado_Pago='No pagado' OR Estado_Entrega='No entre
 
 SELECT COUNT(*) FROM Pedidos WITH (NOLOCK) WHERE (Estado_Pago='No pagado' OR Estado_Entrega='No entregado')
 
-INSERT INTO Pedidos VALUES('0','Pagado','Entregado',(SELECT CONVERT (date, SYSDATETIME())),0)
+INSERT INTO Pedidos VALUES('0','seller','Pagado','Entregado',(SELECT CONVERT (date, SYSDATETIME())),0)
 INSERT INTO Pedidos VALUES(((SELECT TOP 1 Id_Pedido FROM Pedidos ORDER BY Id_Pedido DESC)+1),'No Pagado','No Entregado',(SELECT CONVERT (date, SYSDATETIME())),100)
 
 SELECT COUNT(*) FROM Pedidos WITH (NOLOCK) WHERE (Estado_Pago='No pagado' OR Estado_Entrega='No entregado')
 --************AGREGAR UN NUEVO PEDIDO********************
 GO
-ALTER PROCEDURE insertarPedido
+CREATE PROCEDURE insertarPedido
 AS BEGIN
 INSERT INTO Pedidos VALUES
 (
@@ -331,7 +310,7 @@ execute getRowCount
 
 --**********ACTUALIZAR PEDIDO
 GO
-ALTER PROCEDURE actualizarPedidos @Id_Pedido varchar(20)
+CREATE PROCEDURE actualizarPedidos @Id_Pedido varchar(20)
 AS BEGIN
 UPDATE Pedidos SET Costo_Pedido=(SELECT SUM(Costo_Crepa) FROM Crepas WHERE Id_Pedido=@Id_Pedido) WHERE Id_Pedido=@Id_Pedido
 END
@@ -367,6 +346,7 @@ Adornos_Crepa varchar(100),
 LugarConsumo_Crepa varchar(10),
 Id_Pedido varchar(20),
 foreign key (Id_Pedido) REFERENCES Pedidos(Id_Pedido),
+primary key (Id_Crepa)
 )
 
 drop table Crepas
@@ -383,6 +363,24 @@ INSERT INTO Crepas VALUES
 END
 GO
 
+create table Proveedores
+(
+Id_Proveedor varchar(8) not null,
+Id_Producto varchar (20),
+Nombre_Proveedor varchar(50),
+Teléfono_Proveedor varchar(10),
+Código_Postal varchar(5),
+Estado_Proveedor varchar(5),
+Municipio varchar(100),
+Colonia varchar(100),
+Calle varchar(100),
+Número_Calle varchar(100),
+foreign key (Id_Producto) references Productos(Id_Producto),
+primary key (Id_Proveedor)
+)
+
+
+drop table Proveedores
 
 
 SELECT * FROM Crepas
@@ -460,7 +458,7 @@ execute deliveredCrepe 2
 --*******************************RELLENAR LISTA DE CREPAS DE ACUERDO A SU PEDIDO********************************
 
 GO
-ALTER PROCEDURE consultarCrepa @Id_Pedido varchar(20), @Id_Crepa varchar(20)
+CREATE PROCEDURE consultarCrepa @Id_Pedido varchar(20), @Id_Crepa varchar(20)
 AS BEGIN
 SELECT * FROM Crepas WITH (NOLOCK) WHERE (Id_Pedido=@Id_Pedido AND Id_Crepa=@Id_Crepa)
 END

@@ -1,8 +1,10 @@
 package mainPackage;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,12 +12,14 @@ import java.sql.SQLException;
 import javax.swing.ButtonGroup;
 import static mainPackage.IngresarAlSistema.conexion;
 import java.sql.ResultSet;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.Icon;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import static mainPackage.AdministrarUsuarios.tableSizeComparator;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -23,6 +27,9 @@ import javax.swing.JOptionPane;
  * @author Ramón
  */
 public class AdministrarProveedores extends javax.swing.JFrame {
+    
+    
+
     public static Connection contacto = null;
     public static boolean establecido;
     static int counter = 0, counter2 = 0;
@@ -42,7 +49,7 @@ public class AdministrarProveedores extends javax.swing.JFrame {
     {
 	try{
 		Connection co;
-		co=DriverManager.getConnection("jdbc:sqlserver://RAMON-SON:1433;databaseName=SDCDB;","sa","sa");
+		co=DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=SDCDB;","sa","sa");
 		establecido=true;
                 return co;
                 
@@ -58,7 +65,6 @@ public class AdministrarProveedores extends javax.swing.JFrame {
         initComponents();
         //setIconImage(new ImageIcon(getClass().getResource("SISTEMADOSCREPAS/cre.jpg")).getImage());
         
-    
         
         
                 nameComboBox.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
@@ -96,8 +102,10 @@ public class AdministrarProveedores extends javax.swing.JFrame {
         
         
         //Para que se inicialicen desactivados
-         ImageIcon crepasLogotype = new ImageIcon("src/images/cre.jpg");
-         ImageIcon proverdorLogotype = new ImageIcon("src/images/pro.jpg");
+        
+        
+         ImageIcon crepasLogotype = new ImageIcon("images/cre.jpg");
+         ImageIcon proverdorLogotype = new ImageIcon("images/pro.jpg");
          Icon icono = new ImageIcon(crepasLogotype.getImage().getScaledInstance(lblFondo.getWidth(), lblFondo.getHeight(), Image.SCALE_DEFAULT));
          Icon iconito = new ImageIcon(proverdorLogotype.getImage().getScaledInstance(lblFondito.getWidth(), lblFondito.getHeight(), Image.SCALE_DEFAULT));
          lblFondito.setIcon(iconito);
@@ -227,7 +235,6 @@ public class AdministrarProveedores extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        Proveedores.setBackground(new java.awt.Color(92, 100, 90));
         Proveedores.setMaximumSize(new java.awt.Dimension(1000, 1000));
         Proveedores.setName("Administrar Proveedores"); // NOI18N
 
@@ -267,7 +274,6 @@ public class AdministrarProveedores extends javax.swing.JFrame {
             }
         });
 
-        addRadioButton.setBackground(new java.awt.Color(92, 100, 90));
         buttonGroup.add(addRadioButton);
         addRadioButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         addRadioButton.setText("Agregar");
@@ -277,7 +283,6 @@ public class AdministrarProveedores extends javax.swing.JFrame {
             }
         });
 
-        modifyRadioButton.setBackground(new java.awt.Color(92, 100, 90));
         buttonGroup.add(modifyRadioButton);
         modifyRadioButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         modifyRadioButton.setText("Modificar");
@@ -287,7 +292,6 @@ public class AdministrarProveedores extends javax.swing.JFrame {
             }
         });
 
-        consultRadioButton.setBackground(new java.awt.Color(92, 100, 90));
         buttonGroup.add(consultRadioButton);
         consultRadioButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         consultRadioButton.setText("Consultar");
@@ -297,7 +301,6 @@ public class AdministrarProveedores extends javax.swing.JFrame {
             }
         });
 
-        eraseRadioButton.setBackground(new java.awt.Color(92, 100, 90));
         buttonGroup.add(eraseRadioButton);
         eraseRadioButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         eraseRadioButton.setText("Eliminar");
@@ -394,6 +397,10 @@ public class AdministrarProveedores extends javax.swing.JFrame {
             }
         });
 
+        lblFondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mainPackage/DosCreepauxCutted.png"))); // NOI18N
+
+        lblFondito.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mainPackage/pro.jpg"))); // NOI18N
+
         nameComboBox.setEditable(true);
         nameComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -412,7 +419,6 @@ public class AdministrarProveedores extends javax.swing.JFrame {
             }
         });
 
-        idRadioButton.setBackground(new java.awt.Color(92, 100, 90));
         buttonGroup1.add(idRadioButton);
         idRadioButton.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         idRadioButton.setText("Id");
@@ -422,7 +428,6 @@ public class AdministrarProveedores extends javax.swing.JFrame {
             }
         });
 
-        nameRadioButton.setBackground(new java.awt.Color(92, 100, 90));
         buttonGroup1.add(nameRadioButton);
         nameRadioButton.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         nameRadioButton.setText("Nombre");
@@ -515,11 +520,13 @@ public class AdministrarProveedores extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(lblFondito, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 12, Short.MAX_VALUE))))
-                    .addComponent(lblFondo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(ProveedoresLayout.createSequentialGroup()
-                        .addComponent(addRadioButton)
-                        .addGap(52, 52, 52)
-                        .addComponent(modifyRadioButton)
+                        .addGroup(ProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(ProveedoresLayout.createSequentialGroup()
+                                .addComponent(addRadioButton)
+                                .addGap(52, 52, 52)
+                                .addComponent(modifyRadioButton))
+                            .addComponent(lblFondo))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -1342,6 +1349,7 @@ public class AdministrarProveedores extends javax.swing.JFrame {
                 new AdministrarProveedores().setVisible(true);
             }
         });
+        
     }
     private javax.swing.JTextField methodTextField;
     // Variables declaration - do not modify//GEN-BEGIN:variables

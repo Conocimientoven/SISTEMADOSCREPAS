@@ -6,10 +6,16 @@
 
 package mainPackage;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.io.IOException;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**S
@@ -19,10 +25,10 @@ import java.sql.ResultSet;
 public class IngresarAlSistema extends javax.swing.JFrame {
     
     
-     static Connection conexion;
+    static Connection conexion;
     
     static ResultSet res, spaceUsed;
-    
+    static PreparedStatement pre;
     static String testUsers[][] = new String[3][1];
     
     static int tableSize=0, tableSizeComparator=0;
@@ -31,9 +37,14 @@ public class IngresarAlSistema extends javax.swing.JFrame {
     /**
      * Creates new form IngresarAlSistema
      */
-    public IngresarAlSistema() {
+    public IngresarAlSistema() { 
+        
+        this.setTitle("Ingresar al sistema");
+        
         initComponents();
-        this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null); 
+        
+        
     }
 
     /**
@@ -45,34 +56,46 @@ public class IngresarAlSistema extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
         userField = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
         passwordField = new javax.swing.JPasswordField();
+        jButton2 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ingresar al sistema");
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("DosCreepauxICO.jpg"))
+        );
+        setResizable(false);
 
-        jLabel1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabel1.setText("Clave:");
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
-        jLabel2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabel2.setText("Usuario:");
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mainPackage/DosCreepauxCutted.png"))); // NOI18N
 
+        userField.setBackground(new java.awt.Color(255, 255, 255));
         userField.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        userField.setText("4mayoxdxdx");
-
-        jButton1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jButton1.setText("Aceptar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+        userField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                userFieldKeyTyped(evt);
             }
         });
 
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mainPackage/LOGINuser.png"))); // NOI18N
+
+        passwordField.setBackground(new java.awt.Color(255, 255, 255));
+        passwordField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                passwordFieldKeyTyped(evt);
+            }
+        });
+
+        jButton2.setBackground(java.awt.SystemColor.control);
         jButton2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(0, 0, 0));
         jButton2.setText("Salir");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -80,50 +103,99 @@ public class IngresarAlSistema extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setBackground(java.awt.SystemColor.control);
+        jButton1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(0, 0, 0));
+        jButton1.setText("Iniciar sesión");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mainPackage/LOGINpassword.png"))); // NOI18N
+
+        jButton3.setBackground(new java.awt.Color(204, 204, 204));
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mainPackage/LOGINshowPassword.png"))); // NOI18N
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton3MousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jButton3MouseReleased(evt);
+            }
+        });
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(46, 46, 46)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton1)
+                                .addGap(65, 65, 65))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel2))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                                    .addComponent(userField))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel5)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addGap(26, 26, 26)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(userField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(23, 23, 23)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2))
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(45, 45, 45)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(60, 60, 60))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(userField, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
-                            .addComponent(passwordField))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(44, 44, 44)
-                    .addComponent(jLabel2)
-                    .addContainerGap(311, Short.MAX_VALUE)))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(83, 83, 83)
-                .addComponent(userField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(47, 47, 47)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(84, 84, 84)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(192, Short.MAX_VALUE)))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -132,59 +204,126 @@ public class IngresarAlSistema extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         
-         String pass = new String (passwordField.getPassword());
-
-        res=Conexion.Consulta("execute selectionForAccess");   
-        spaceUsed=Conexion.Consulta("execute getRowCount"); 
-        
-        try{
-            while (spaceUsed.next()){
-             tableSize=spaceUsed.getInt(1);
-            }
-        }catch(SQLException e)
-        {}
-        //System.out.println("Number of row:"+tableSize);
+        if(userField.getText().length()==0 || passwordField.getText().length()==0)
+        {
+             JOptionPane.showMessageDialog(null, "Ni campo de usuario o ni el de la contraseña no puede estar vacío","",JOptionPane.PLAIN_MESSAGE);
+        }
        
-        try{
-            while(res.next()){
+        else
+        {
+        
+        
+            //Método creado para que, cuando apenas se instaló el programa en otra computadora, se pueda restaurar toda la BD usando un respaldo de ésta
+            String pass = new String (passwordField.getPassword());
+            if((userField.getText()).equals("2crepas") && pass.equals("2crepas"))
+            {
 
-                testUsers[0][0]=res.getString(1);
-                testUsers[1][0]=res.getString(2);
-                testUsers[2][0]=res.getString(3);
-            
-                tableSizeComparator++;
-                
-            if(userField.getText().equals(testUsers[0][0]) && pass.equals(testUsers[1][0]) && testUsers[2][0].equals("Vendedor"))
+                conexion = Conexion.realizarConexionMaster();
+                try {
+                    pre=conexion.prepareStatement("RESTORE DATABASE SDCDB FROM DISK = 'C:\\SDCDB.BAK' WITH REPLACE");
+                    pre.execute();
+                } catch (SQLException ex) {
+                    Logger.getLogger(IngresarAlSistema.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+
+                JOptionPane.showMessageDialog(null, "Se acaba de restaurar la base de datos. Puedes consultar con cuáles usuarios puedes ingresar al sistema en el manual del usuario","",JOptionPane.PLAIN_MESSAGE);
+
+                try {
+                   AdministrarBD db = new AdministrarBD();
+                    db.setVisible(true);
+                    //dispose();
+                } catch (IOException ex) {
+                    Logger.getLogger(IngresarAlSistema.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+            else
             {
-                tableSizeComparator=0;
-                JOptionPane.showMessageDialog(null, "Identificado como VENDEDOR","",JOptionPane.PLAIN_MESSAGE);
-                InterfazVendedor mainPage = new InterfazVendedor();
-                mainPage.setVisible(true);
-                dispose();
+
+
+                res=Conexion.Consulta("execute selectionForAccess");   
+                spaceUsed=Conexion.Consulta("execute getRowCount"); 
+
+                try{
+                    while (spaceUsed.next()){
+                     tableSize=spaceUsed.getInt(1);
+                    }
+                }catch(SQLException e)
+                {}
+                //System.out.println("Number of row:"+tableSize);
+
+                try{
+                    while(res.next()){
+
+                        testUsers[0][0]=res.getString(1);
+                        testUsers[1][0]=res.getString(2);
+                        testUsers[2][0]=res.getString(3);
+
+                        tableSizeComparator++;
+
+                    if(userField.getText().equals(testUsers[0][0]) && pass.equals(testUsers[1][0]) && testUsers[2][0].equals("Vendedor"))
+                    {
+                        tableSizeComparator=0;
+                        JOptionPane.showMessageDialog(null, "Identificado como VENDEDOR","",JOptionPane.PLAIN_MESSAGE);
+                        InterfazVendedor mainPage = new InterfazVendedor();
+                        mainPage.setVisible(true);
+                        dispose();
+                    }
+
+                    else if(userField.getText().equals(testUsers[0][0]) && pass.equals(testUsers[1][0]) && testUsers[2][0].equals("Administrador"))
+                    {
+                        tableSizeComparator=0;
+                        JOptionPane.showMessageDialog(null, "Identificado como ADMINISTRADOR","",JOptionPane.PLAIN_MESSAGE);
+                        InterfazAdministrador mainPage = new InterfazAdministrador();
+                        mainPage.setVisible(true);
+                        dispose();
+                    }
+                    else if(tableSizeComparator>=tableSize)
+                    {
+                        tableSizeComparator=0;
+                        JOptionPane.showMessageDialog(null, "Usuario o clave incorrecta","",JOptionPane.PLAIN_MESSAGE);
+                    }
+
+                    }
+                } catch(SQLException e)
+                {}
             }
-            
-            else if(userField.getText().equals(testUsers[0][0]) && pass.equals(testUsers[1][0]) && testUsers[2][0].equals("Administrador"))
-            {
-                tableSizeComparator=0;
-                JOptionPane.showMessageDialog(null, "Identificado como ADMINISTRADOR","",JOptionPane.PLAIN_MESSAGE);
-                InterfazAdministrador mainPage = new InterfazAdministrador();
-                mainPage.setVisible(true);
-                dispose();
-            }
-            else if(tableSizeComparator>=tableSize)
-            {
-                tableSizeComparator=0;
-                JOptionPane.showMessageDialog(null, "Usuario o clave incorrecta","",JOptionPane.PLAIN_MESSAGE);
-            }
-                
-            }
-        } catch(SQLException e)
-        {}
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         System.exit(0);
     }//GEN-LAST:event_jButton2MouseClicked
+
+    private void userFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_userFieldKeyTyped
+        if(userField.getText().length()>=20)
+        {evt.consume();}
+        
+        int values = (int) evt.getKeyChar(); 
+
+        if (values!=8 && (values<48 || values>57) && (values<65 || values>90) && (values<97 || values>122)) 
+        {evt.consume();}
+    }//GEN-LAST:event_userFieldKeyTyped
+
+    private void passwordFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordFieldKeyTyped
+        if(passwordField.getText().length()>=30)
+        {evt.consume();}
+    }//GEN-LAST:event_passwordFieldKeyTyped
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MousePressed
+      
+        passwordField.setEchoChar((char)0);
+        
+    }//GEN-LAST:event_jButton3MousePressed
+
+    private void jButton3MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseReleased
+        passwordField.setEchoChar('*');
+    }//GEN-LAST:event_jButton3MouseReleased
 
     /**
      * @param args the command line arguments
@@ -225,8 +364,11 @@ public class IngresarAlSistema extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JTextField userField;
     // End of variables declaration//GEN-END:variables

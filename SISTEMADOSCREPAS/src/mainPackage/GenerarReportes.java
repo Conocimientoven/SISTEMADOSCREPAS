@@ -18,8 +18,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
@@ -39,7 +37,6 @@ public class GenerarReportes extends javax.swing.JFrame {
     static Statement st;
     static int tableSize=0,tableSizeComparator=0;
     static PreparedStatement pre, pre2;
-    static String mes="",day="";
     
     /**
      * Creates new form GenerarReportes
@@ -58,7 +55,10 @@ public class GenerarReportes extends javax.swing.JFrame {
         date.setTime(calendar.getTimeInMillis());
 
         jDateChooser1.setDate(date);
-        jDateChooser1.setDate(date);
+        jDateChooser2.setDate(date);
+        
+        jDateChooser1.setMaxSelectableDate(date);
+        jDateChooser2.setMaxSelectableDate(date);
     }
 
     /**
@@ -73,14 +73,15 @@ public class GenerarReportes extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jButton5 = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jDateChooser2 = new com.toedter.calendar.JDateChooser();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,6 +100,40 @@ public class GenerarReportes extends javax.swing.JFrame {
                 jButton2MouseClicked(evt);
             }
         });
+
+        jLabel4.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
+        jLabel4.setText("TOTAL:");
+
+        jTextField1.setEditable(false);
+        jTextField1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+
+        jButton5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jButton5.setText("Volver");
+        jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton5MouseClicked(evt);
+            }
+        });
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jDateChooser1.setDateFormatString("YYYY-MM-dd");
+        jDateChooser1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jDateChooser1.setMaxSelectableDate(new java.util.Date(253370790081000L));
+        jDateChooser1.setMinSelectableDate(new java.util.Date(946710116000L));
+
+        jDateChooser2.setDateFormatString("YYYY-MM-dd");
+        jDateChooser2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jDateChooser2.setMinSelectableDate(new java.util.Date(946710116000L));
+
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel1.setText("Día de inicio:");
+
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel2.setText("Día de terminación:");
 
         jTable1.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -131,43 +166,6 @@ public class GenerarReportes extends javax.swing.JFrame {
             jTable1.getColumnModel().getColumn(1).setResizable(false);
         }
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
-        jLabel4.setText("TOTAL:");
-
-        jTextField1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-
-        jButton5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jButton5.setText("Volver");
-        jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton5MouseClicked(evt);
-            }
-        });
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 376, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        jDateChooser1.setDateFormatString("YYYY-MM-dd");
-        jDateChooser1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jDateChooser1.setMinSelectableDate(new java.util.Date(1525154516000L));
-
-        jDateChooser2.setDateFormatString("YYYY-MM-dd");
-        jDateChooser2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jDateChooser2.setMinSelectableDate(new java.util.Date(1525154516000L));
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -175,52 +173,53 @@ public class GenerarReportes extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 783, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(43, 43, 43)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(74, 74, 74)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(51, 51, 51)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 783, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(219, 219, 219)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(24, 24, 24)
                         .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(132, 132, 132)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(147, 147, 147)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(315, 315, 315)
-                                .addComponent(jLabel4))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(114, 114, 114)
-                                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(24, Short.MAX_VALUE))
+                        .addGap(311, 311, 311)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                .addGap(65, 65, 65)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jDateChooser1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jDateChooser2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(66, 66, 66)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(61, 61, 61)
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22))
         );
@@ -229,9 +228,7 @@ public class GenerarReportes extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1015, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,10 +259,6 @@ public class GenerarReportes extends javax.swing.JFrame {
         {
             conexion = Conexion.realizarConexion();
             res = Conexion.Consulta("SELECT COUNT(*) FROM Pedidos WITH (NOLOCK)");
-            
-            
-           //System.out.println(((JTextField)jDateChooser1.getDateEditor().getUiComponent()).getText());
-           //System.out.println(((JTextField)jDateChooser2.getDateEditor().getUiComponent()).getText());
            
             res2=Conexion.Consulta("SELECT Id_Pedido,Costo_Pedido FROM Pedidos "
                     + "WHERE (Fecha_Pedido>='"+(((JTextField)jDateChooser1.getDateEditor().getUiComponent()).getText())+"' "
@@ -334,18 +327,6 @@ public class GenerarReportes extends javax.swing.JFrame {
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
-         
-        
-        
-        
-        //PARA LA RUTA
-        
-        
-        
-        //FIN PARA LA RUTA
-        
-        
-        
         Document document = new Document();
         try {
         PdfWriter.getInstance(document, new FileOutputStream("REPORTEVENTAS"+""+(((JTextField)jDateChooser1.getDateEditor().getUiComponent()).getText())+".pdf"));
@@ -389,10 +370,7 @@ public class GenerarReportes extends javax.swing.JFrame {
                 table.addCell(totalConsult[f][0]);
                 table.addCell(totalConsult[f][1]);
             }
-            
-            mes="";
-            
-            
+
             res3=Conexion.Consulta("SELECT SUM(Costo_Pedido) FROM Pedidos "
                     + "WHERE (Fecha_Pedido>='"+(((JTextField)jDateChooser1.getDateEditor().getUiComponent()).getText())+"' "
                             + "AND Fecha_Pedido<='"+(((JTextField)jDateChooser2.getDateEditor().getUiComponent()).getText())+"')");
@@ -400,7 +378,10 @@ public class GenerarReportes extends javax.swing.JFrame {
             while(res3.next())
             {
                 table.addCell("VENTA TOTAL DEL DÍA");
-                table.addCell(jTextField1.getText());
+                while(res.next())
+                {
+                    table.addCell(res.getString(1));
+                }
             }            
         }
         catch (SQLException e)
@@ -460,9 +441,10 @@ public class GenerarReportes extends javax.swing.JFrame {
     private javax.swing.JButton jButton5;
     public static com.toedter.calendar.JDateChooser jDateChooser1;
     public static com.toedter.calendar.JDateChooser jDateChooser2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private static javax.swing.JTable jTable1;
     private static javax.swing.JTextField jTextField1;

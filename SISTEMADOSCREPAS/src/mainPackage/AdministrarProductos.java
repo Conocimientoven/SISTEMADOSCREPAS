@@ -37,7 +37,7 @@ public class AdministrarProductos extends javax.swing.JFrame {
     {
 	try{
 		Connection co;
-		co=DriverManager.getConnection("jdbc:sqlserver://RAMON-SON:1433;databaseName=SDCDB;","sa","sa");
+		co=DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=SDCDB;","sa","sa");
 		establecido=true;
                 return co;
                 
@@ -95,8 +95,8 @@ public class AdministrarProductos extends javax.swing.JFrame {
          
          
         
-        ImageIcon crepasLogotype = new ImageIcon("src/images/cre.jpg");
-        ImageIcon logoProductoss =  new ImageIcon("src/images/producto.jpg");
+        ImageIcon crepasLogotype = new ImageIcon("images/cre.jpg");
+        ImageIcon logoProductoss =  new ImageIcon("images/producto.jpg");
         Icon icono2 = new ImageIcon(logoProductoss.getImage().getScaledInstance(logoProductos.getWidth(), logoProductos.getHeight(), Image.SCALE_DEFAULT));
         Icon icono = new ImageIcon(crepasLogotype.getImage().getScaledInstance(logoCrepas.getWidth(), logoCrepas.getHeight(), Image.SCALE_DEFAULT));
         logoCrepas.setIcon(icono);
@@ -157,8 +157,6 @@ public class AdministrarProductos extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(92, 100, 90));
-
         sizeComboBox.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         sizeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "---", "Kilos", "Litros", "Botes" }));
         sizeComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -191,7 +189,6 @@ public class AdministrarProductos extends javax.swing.JFrame {
             }
         });
 
-        addRadioButton.setBackground(new java.awt.Color(92, 100, 90));
         buttonGroup1.add(addRadioButton);
         addRadioButton.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         addRadioButton.setText("Agregar");
@@ -201,7 +198,6 @@ public class AdministrarProductos extends javax.swing.JFrame {
             }
         });
 
-        modifyRadioButton.setBackground(new java.awt.Color(92, 100, 90));
         buttonGroup1.add(modifyRadioButton);
         modifyRadioButton.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         modifyRadioButton.setText("Modificar");
@@ -211,7 +207,6 @@ public class AdministrarProductos extends javax.swing.JFrame {
             }
         });
 
-        eraseRadioButton.setBackground(new java.awt.Color(92, 100, 90));
         buttonGroup1.add(eraseRadioButton);
         eraseRadioButton.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         eraseRadioButton.setText("Eliminar");
@@ -221,7 +216,6 @@ public class AdministrarProductos extends javax.swing.JFrame {
             }
         });
 
-        consultRadioButton.setBackground(new java.awt.Color(92, 100, 90));
         buttonGroup1.add(consultRadioButton);
         consultRadioButton.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         consultRadioButton.setText("Consultar");
@@ -233,6 +227,8 @@ public class AdministrarProductos extends javax.swing.JFrame {
 
         logoLabel.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         logoLabel.setText("ADMINISTRACIÓN DE PRODUCTOS");
+
+        logoCrepas.setIcon(new javax.swing.ImageIcon("C:\\Users\\Success\\Documents\\GitHub\\SISTEMADOSCREPAS\\SISTEMADOSCREPAS\\images\\DosCreepauxCutted.png")); // NOI18N
 
         acceptButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         acceptButton.setText("Aceptar");
@@ -257,6 +253,8 @@ public class AdministrarProductos extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(descriptionTextArea);
+
+        logoProductos.setMaximumSize(new java.awt.Dimension(400, 400));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
